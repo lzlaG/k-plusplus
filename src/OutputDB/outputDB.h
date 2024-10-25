@@ -1,3 +1,7 @@
+/** 
+ * @file outputDB.h
+ * @brief Модуль, необходимый для создания и заполнения пораждаемых бах данных
+ */
 #ifndef OUTPUT_DB_H
 #define OUTPUT_DB_H
 
@@ -7,6 +11,9 @@
 
 using namespace std;
 
+/** 
+ * Класс для работы с пораждаемыми базами данных
+ */
 class OutputDB
 {
 private:

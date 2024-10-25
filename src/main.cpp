@@ -10,18 +10,21 @@ using namespace std;
 #include "calculateShaHash/calculateShaHash.h"
 #include "../models/fileSchema.h"
 
+/** 
+ * @file main.cpp
+ * Основной ход программы
+ */
 int main(int argc, char const *argv[])
 {
-    // setlocale(LC_ALL, "Russian");
-    vector<FilePtr> filename = getFileFromDir("../tests");
-    NSRLRepository nsrlRepo = NSRLRepository("../src/nsrlRepository/test.db");
-    OutputDB ourDatabase;
+    vector<FilePtr> filename = getFileFromDir("../tests"); // Рекурсивный обход указанной директории
+    NSRLRepository nsrlRepo = NSRLRepository("../src/nsrlRepository/test.db"); // Инициализация NSRL репозитория
+    OutputDB ourDatabase; // Создание выходных баз данных
 
     for (int i = 0; i < filename.size(); i++)
     {
-        CalculateSHA1Hash(filename[i]);
-        nsrlRepo.IsHashInDB(filename[i]);
-        ourDatabase.FillTheDB(filename[i]);
+        CalculateSHA1Hash(filename[i]); // Подсчет хеша
+        nsrlRepo.IsHashInDB(filename[i]); // Анализ контрольной суммы файла 
+        ourDatabase.FillTheDB(filename[i]); // Заполнение баз данных
     }
     filename.clear();
 }
