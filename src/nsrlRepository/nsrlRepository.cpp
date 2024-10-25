@@ -6,10 +6,14 @@ using namespace std;
 
 #include "nsrlRepository.h"
 
+/** 
+ * Открытие базы данных (Конструктор)
+ * @param [in] path Путь к базе NSRL
+ */
 NSRLRepository::NSRLRepository(string path)
 {
     int openResult = sqlite3_open_v2(
-        path.c_str(), // путь к файлу бд
+        path.c_str(),
         &Database,
         SQLITE_OPEN_READWRITE,
         NULL);   // открытие бд и передача имени бд open - имя указывается в кодировке
@@ -20,6 +24,9 @@ NSRLRepository::NSRLRepository(string path)
     }
 }
 
+/** 
+ * @param [in] Структура файла с названием и путем до него
+ */
 void NSRLRepository::IsHashInDB(FilePtr file)
 {
     sqlite3_stmt *pStatement;

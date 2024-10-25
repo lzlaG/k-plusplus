@@ -2,6 +2,11 @@
 #include "outputDB.h"
 
 using namespace std;
+
+/** 
+ * Заполнение базы данных 
+ * @param [in] ourfile Заполненная структура файла
+ */
 void OutputDB::FillTheDB(FilePtr ourfile)
 {
     if (ourfile->Is_nsrl_db == true)
