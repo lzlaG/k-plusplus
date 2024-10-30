@@ -10,11 +10,11 @@ using namespace filesystem;
 #include "../../models/fileSchema.h"
 #include "getFileFromDir.h"
 
-/** 
+/**
  * @param [in] path Путь к анализируемой директории
  * @param [out] result Заполненый вектор со считанными именами и путями в собственных структурах для каждого файла
  */
-vector<FilePtr> getFileFromDir(string path)
+vector<FilePtr> getFileFromDir(filesystem::path path)
 {
     vector<FilePtr> result;
     for (const auto &dirEntry : recursive_directory_iterator(path))

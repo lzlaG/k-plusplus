@@ -6,7 +6,7 @@ using namespace std;
 
 #include "nsrlRepository.h"
 
-/** 
+/**
  * Открытие базы данных (Конструктор)
  * @param [in] path Путь к базе NSRL
  */
@@ -16,7 +16,7 @@ NSRLRepository::NSRLRepository(string path)
         path.c_str(),
         &Database,
         SQLITE_OPEN_READWRITE,
-        NULL);   // открытие бд и передача имени бд open - имя указывается в кодировке
+        NULL); // открытие бд и передача имени бд open - имя указывается в кодировке
 
     if (openResult != SQLITE_OK)
     {
@@ -24,8 +24,8 @@ NSRLRepository::NSRLRepository(string path)
     }
 }
 
-/** 
- * @param [in] Структура файла с названием и путем до него
+/**
+ * @param [in] file Структура файла с названием и путем до него
  */
 void NSRLRepository::IsHashInDB(FilePtr file)
 {
@@ -48,7 +48,6 @@ void NSRLRepository::IsHashInDB(FilePtr file)
         n = sqlite3_column_int(pStatement, 0); // вывод количества записей
     }
     sqlite3_finalize(pStatement);
-    // cout << to_string(n) << endl;
     if (n > 0)
     {
         file->Is_nsrl_db = true;
