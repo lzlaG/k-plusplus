@@ -1,3 +1,7 @@
+/**
+ * @file application.h
+ * @brief Основной модуль, необходимый для парсинга параметров из командной строки
+ */
 #ifndef MENU_EAPPLICATION_H
 #define MENU_EAPPLICATION_H
 
@@ -8,6 +12,9 @@ namespace po = boost::program_options;
 
 using namespace std;
 
+/**
+ * Класс всего приложения, содержит парсер командной строки и основную логику приложения
+ */
 class Application
 {
 public:
@@ -20,9 +27,9 @@ private:
     po::variables_map m_vm; // контейнер для сохранения выбранных опций программы
 
     // Требуемые в программе переменные для работы с опциями меню
-    filesystem::path m_inputDBPath;
-    filesystem::path m_scanDirPath;
-    filesystem::path m_outputDBPath;
+    filesystem::path m_inputDBPath;  // Путь до базы NSRL
+    filesystem::path m_scanDirPath;  // Путь для сканирования
+    filesystem::path m_outputDBPath; // Путь для создания бд для ответа
 };
 
 #endif // MENU_EAPPLICATION_H

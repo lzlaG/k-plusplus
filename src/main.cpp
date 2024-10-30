@@ -8,7 +8,7 @@ using namespace std;
 
 /**
  * @file main.cpp
- * Основной ход программы
+ * Инстализация приложения и запуск
  */
 int main(int argc, const char *argv[])
 {

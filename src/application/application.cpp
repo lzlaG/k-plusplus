@@ -12,6 +12,11 @@
 
 using namespace std;
 
+/**
+ * Конструктор приложения
+ * @param [in] argc количество отправленных параметров
+ * @param [in] argv отправленные параметры
+ */
 Application::Application(int argc, const char **argv)
 {
     // Добавляем пункты меню
@@ -20,6 +25,9 @@ Application::Application(int argc, const char **argv)
     po::notify(m_vm);                                            // записываем аргументы в переменные в программе
 }
 
+/**
+ * Запуск приложения
+ */
 int Application::exec()
 {
     // Если есть запрос на справку
