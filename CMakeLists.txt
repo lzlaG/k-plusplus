@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 project(kpp)
 
+set(CMAKE_C_FLAGS_DEBUG "-g -DDEBUG")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -DDEBUG")
+
 # задаем директории исходников и библиотек
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
@@ -21,6 +24,8 @@ endif()
 
 #собираем sqlite3
 add_library(sqlite3 STATIC ${LIB_DIR}/sqlite3/sqlite3.c)
+
+find_package(Boost 1.58.0 COMPONENTS filesystem program_options)
 
 #собираем outputdb библиотеку
 add_library(OutputDB ${SOURCE_DIR}/OutputDB/outputDB.cpp)
@@ -40,9 +45,18 @@ add_subdirectory(${LIB_DIR}/cryptopp-cmake)
 add_library(calculateShaHash STATIC ${SOURCE_DIR}/calculateShaHash/calculateShaHash.cpp)
 target_link_libraries(calculateShaHash PRIVATE cryptopp)
 
-#сборка всего приложения
-add_executable(k-pp ${SOURCE_DIR}/main.cpp)
-target_link_libraries(k-pp calculateShaHash getFileFromDir nsrlRepository OutputDB)
+# Пытаемся найти Boost
+if(Boost_FOUND)
+    include_directories(${Boost_INCLUDE_DIRS})
+
+    # собираем application библиотеку
+    add_library(application STATIC ${SOURCE_DIR}/application/application.cpp)
+    target_link_libraries(application calculateShaHash getFileFromDir nsrlRepository OutputDB ${Boost_LIBRARIES})
+
+    #сборка всего приложения
+    add_executable(k-pp ${SOURCE_DIR}/main.cpp)
+    target_link_libraries(k-pp application)
+endif()
 
 #отправим собранное приложение в необходимую директорию
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file outputDB.h
  * @brief Модуль, необходимый для создания и заполнения пораждаемых бах данных
  */
@@ -11,7 +11,7 @@
 
 using namespace std;
 
-/** 
+/**
  * Класс для работы с пораждаемыми базами данных
  */
 class OutputDB
@@ -20,9 +20,9 @@ private:
     sqlite3 *DB;
 
 public:
-    OutputDB()
+    OutputDB(string path)
     {
-        sqlite3_open("output.db", &DB);
+        sqlite3_open((path).c_str(), &DB);
         string create_known_table = "CREATE TABLE IF NOT EXISTS KNOWN_FILES ("
                                     "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                                     "NAME TEXT,"
