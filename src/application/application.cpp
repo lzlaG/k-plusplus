@@ -60,11 +60,17 @@ int Application::exec()
     NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);  // Инициализация NSRL репозитория
     OutputDB ourDatabase = OutputDB(m_outputDBPath);          // Создание выходных баз данных
 
+    int j = 0;
     for (int i = 0; i < filename.size(); i++)
     {
         CalculateSHA1Hash(filename[i]);     // Подсчет хеша
         nsrlRepo.IsHashInDB(filename[i]);   // Анализ контрольной суммы файла
         ourDatabase.FillTheDB(filename[i]); // Заполнение баз данных
+        if (i > j * 10)
+        {
+            cout << "Обработана" << j << " сотка" << endl;
+            j++;
+        }
     }
 
     filename.clear();

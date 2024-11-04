@@ -1,4 +1,4 @@
-/** 
+/**
  * @file nsrlRepository.h
  * @brief Модуль, необходимый для взаимодействия с базой NSRL
  */
@@ -16,6 +16,13 @@ class NSRLRepository
 private:
     sqlite3 *Database;
 
+    static int callback(void *count, int argc, char **argv, char **azColName)
+    {
+        int *c = (int *)count;
+        *c = atoi(argv[0]);
+        return 0;
+    }
+
 public:
     class OpenDBException // Для проброса ошибок открытия БД
     {
@@ -25,7 +32,7 @@ public:
     };
     NSRLRepository(string path);
     ~NSRLRepository() { sqlite3_close(Database); }; // закрытие бд
-    /** 
+    /**
      * Функция считывания хэша из базы NSRL
      */
     void IsHashInDB(FilePtr file);

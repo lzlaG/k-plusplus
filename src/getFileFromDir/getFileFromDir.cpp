@@ -12,7 +12,7 @@ using namespace filesystem;
 
 /**
  * @param [in] path Путь к анализируемой директории
- * @param [out] result Заполненый вектор со считанными именами и путями в собственных структурах для каждого файла
+ * @param [out] result Заполнены вектор со считанными именами и путями в собственных структурах для каждого файла
  */
 vector<FilePtr> getFileFromDir(filesystem::path path)
 {
@@ -26,13 +26,13 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
         {
             if (!is_directory(dirEntry) && exists(dirEntry))
             {
-                ifstream IsFileOpen(filePath);
+                // ifstream IsFileOpen(filePath);
 
-                if (!IsFileOpen.is_open())
-                {
-                    cerr << "Can't open the file (permisson denied): " << filePath << endl;
-                    continue;
-                }
+                // if (!IsFileOpen.is_open())
+                // {
+                //     cerr << "Can't open the file (permisson denied): " << filePath << endl;
+                //     continue;
+                // }
 
                 FilePtr file = new File();
                 file->path = filePath.string();

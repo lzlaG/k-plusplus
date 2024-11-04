@@ -22,7 +22,7 @@ private:
 public:
     OutputDB(string path)
     {
-        sqlite3_open((path).c_str(), &DB);
+        int err = sqlite3_open((path).c_str(), &DB);
         string create_known_table = "CREATE TABLE IF NOT EXISTS KNOWN_FILES ("
                                     "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                                     "NAME TEXT,"

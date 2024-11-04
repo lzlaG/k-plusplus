@@ -18,15 +18,24 @@ void CalculateSHA1Hash(FilePtr file)
     SHA1 sha1;
     string hash;
 
-    FileSource fileSource(file->path.c_str(), true,
-                          new HashFilter(sha1,
-                                         new HexEncoder(
-                                             new StringSink(hash), false)));
-
-    for (auto &x : hash)
+    try
     {
-        x = toupper(x);
-    }
+        // cerr << file->path << endl;
+        FileSource fileSource(file->path.c_str(), true,
+                              new HashFilter(sha1,
+                                             new HexEncoder(
+                                                 new StringSink(hash), false)));
 
-    file->hash_sha1 = hash;
+        for (auto &x : hash)
+        {
+            x = toupper(x);
+        }
+
+        file->hash_sha1 = hash;
+    }
+    catch (const exception &e)
+    {
+        cerr << "Another error :( :" << ": " << e.what() << endl;
+        file->hash_sha1 = "";
+    }
 }
