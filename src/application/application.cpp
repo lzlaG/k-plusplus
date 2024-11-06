@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <future>
 
 #include "../nsrlRepository/nsrlRepository.h"
 #include "../getFileFromDir/getFileFromDir.h"
@@ -42,7 +43,8 @@ int Application::exec()
     {
         // То выводим описание меню
         cout << "Введите параметр scan-dir" << endl;
-        return -1;
+        m_scanDirPath = "/home/dmitriy/CLionProjects/k-plusplus/tests";
+        // return -1;
     }
 
     if (!m_vm.count("nsrl-db-path"))
@@ -63,14 +65,16 @@ int Application::exec()
     int j = 0;
     for (int i = 0; i < filename.size(); i++)
     {
-        CalculateSHA1Hash(filename[i]);     // Подсчет хеша
-        nsrlRepo.IsHashInDB(filename[i]);   // Анализ контрольной суммы файла
+
+        future<void> a1 = async([filename, i]
+                                { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
+        // nsrlRepo.IsHashInDB(filename[i]);   // Анализ контрольной суммы файла
+        a1.wait();
+        future<void> a2 = async([&nsrlRepo, filename, i]
+                                { nsrlRepo.IsHashInDB(filename[i]); });
+        // filename[i]->Is_nsrl_db = a1.get();
+        a2.wait();
         ourDatabase.FillTheDB(filename[i]); // Заполнение баз данных
-        if (i > j * 10)
-        {
-            cout << "Обработана" << j << " сотка" << endl;
-            j++;
-        }
     }
 
     filename.clear();
