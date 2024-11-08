@@ -20,17 +20,10 @@ void CalculateSHA1Hash(FilePtr file)
 
     try
     {
-        // cerr << file->path << endl;
         FileSource fileSource(file->path.c_str(), true,
                               new HashFilter(sha1,
                                              new HexEncoder(
-                                                 new StringSink(hash), false)));
-
-        for (auto &x : hash)
-        {
-            x = toupper(x);
-        }
-
+                                                 new StringSink(hash))));
         file->hash_sha1 = hash;
     }
     catch (const exception &e)

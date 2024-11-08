@@ -26,14 +26,6 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
         {
             if (!is_directory(dirEntry) && exists(dirEntry))
             {
-                // ifstream IsFileOpen(filePath);
-
-                // if (!IsFileOpen.is_open())
-                // {
-                //     cerr << "Can't open the file (permisson denied): " << filePath << endl;
-                //     continue;
-                // }
-
                 FilePtr file = new File();
                 file->path = filePath.string();
                 file->name = fileName.string();

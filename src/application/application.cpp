@@ -21,7 +21,7 @@ using namespace std;
 Application::Application(int argc, const char **argv)
 {
     // Добавляем пункты меню
-    m_desc.add_options()("help,h", "Вывести справку")("nsrl-db-path,n", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа");
+    m_desc.add_options()("help,h", "Вывести справку")("nsrl-db-path,n", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа")("output-db-name,n", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать название для базы ответа");
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
     po::notify(m_vm);                                            // записываем аргументы в переменные в программе
 }
@@ -43,8 +43,7 @@ int Application::exec()
     {
         // То выводим описание меню
         cout << "Введите параметр scan-dir" << endl;
-        m_scanDirPath = "/home/dmitriy/CLionProjects/k-plusplus/tests";
-        // return -1;
+        return -1;
     }
 
     if (!m_vm.count("nsrl-db-path"))
@@ -53,26 +52,19 @@ int Application::exec()
         m_inputDBPath = "../src/nsrlRepository/test.db";
     }
 
-    if (!m_vm.count("output-db-path"))
-    {
-        m_outputDBPath = "output.db";
-    }
-
-    vector<FilePtr> filename = getFileFromDir(m_scanDirPath); // Рекурсивный обход указанной директории
-    NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);  // Инициализация NSRL репозитория
-    OutputDB ourDatabase = OutputDB(m_outputDBPath);          // Создание выходных баз данных
+    vector<FilePtr> filename = getFileFromDir(m_scanDirPath);               // Рекурсивный обход указанной директории
+    NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);                // Инициализация NSRL репозитория
+    OutputDB ourDatabase = OutputDB(m_outputDBPath.append(m_outputDBName)); // Создание выходных баз данных
 
     int j = 0;
     for (int i = 0; i < filename.size(); i++)
     {
 
-        future<void> a1 = async([filename, i]
+        future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
                                 { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
-        // nsrlRepo.IsHashInDB(filename[i]);   // Анализ контрольной суммы файла
         a1.wait();
         future<void> a2 = async([&nsrlRepo, filename, i]
                                 { nsrlRepo.IsHashInDB(filename[i]); });
-        // filename[i]->Is_nsrl_db = a1.get();
         a2.wait();
         ourDatabase.FillTheDB(filename[i]); // Заполнение баз данных
     }
