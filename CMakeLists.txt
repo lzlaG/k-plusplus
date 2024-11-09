@@ -46,17 +46,19 @@ add_library(calculateShaHash STATIC ${SOURCE_DIR}/calculateShaHash/calculateShaH
 target_link_libraries(calculateShaHash PRIVATE cryptopp)
 
 # Пытаемся найти Boost
-if(Boost_FOUND)
-    include_directories(${Boost_INCLUDE_DIRS})
-
-    # собираем application библиотеку
-    add_library(application STATIC ${SOURCE_DIR}/application/application.cpp)
-    target_link_libraries(application calculateShaHash getFileFromDir nsrlRepository OutputDB ${Boost_LIBRARIES})
-
-    #сборка всего приложения
-    add_executable(k-pp ${SOURCE_DIR}/main.cpp)
-    target_link_libraries(k-pp application)
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "NOT BOOST")
 endif()
+
+include_directories(${Boost_INCLUDE_DIRS})
+
+# собираем application библиотеку
+add_library(application STATIC ${SOURCE_DIR}/application/application.cpp)
+target_link_libraries(application calculateShaHash getFileFromDir nsrlRepository OutputDB ${Boost_LIBRARIES})
+
+#сборка всего приложения
+add_executable(k-pp ${SOURCE_DIR}/main.cpp)
+target_link_libraries(k-pp application)
 
 #отправим собранное приложение в необходимую директорию
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)

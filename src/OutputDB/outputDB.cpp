@@ -3,8 +3,8 @@
 
 using namespace std;
 
-/** 
- * Заполнение базы данных 
+/**
+ * Заполнение базы данных
  * @param [in] ourfile Заполненная структура файла
  */
 void OutputDB::FillTheDB(FilePtr ourfile)
@@ -13,7 +13,6 @@ void OutputDB::FillTheDB(FilePtr ourfile)
     {
         sqlite3_stmt *stmt;
         string sql = "INSERT INTO KNOWN_FILES (NAME, HASH, PATH) VALUES ('" + ourfile->name + "','" + ourfile->hash_sha1 + "','" + ourfile->path + "');";
-        cout << sql << "\n";
         int err = sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, NULL);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);
@@ -22,7 +21,6 @@ void OutputDB::FillTheDB(FilePtr ourfile)
     {
         sqlite3_stmt *stmt;
         string sql = "INSERT INTO UNKNOWN_FILES (NAME, HASH, PATH) VALUES ('" + ourfile->name + "', '" + ourfile->hash_sha1 + "','" + ourfile->path + "');";
-        // cout << sql << "\n";
         sqlite3_prepare_v2(DB, sql.c_str(), -1, &stmt, NULL);
         sqlite3_step(stmt);
         sqlite3_finalize(stmt);

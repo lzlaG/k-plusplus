@@ -22,7 +22,7 @@ private:
 public:
     OutputDB(string path)
     {
-        sqlite3_open((path).c_str(), &DB);
+        int err = sqlite3_open((path).c_str(), &DB);
         string create_known_table = "CREATE TABLE IF NOT EXISTS KNOWN_FILES ("
                                     "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                                     "NAME TEXT,"
@@ -35,6 +35,10 @@ public:
                                       "PATH TEXT,"
                                       "HASH TEXT"
                                       ");";
+        if (err != SQLITE_OK)
+        {
+            cerr << "Ошибка открытия: " << err << endl;
+        }
         string delete_known_table = "DELETE FROM KNOWN_FILES;";
         string delete_unknown_table = "DELETE FROM UNKNOWN_FILES;";
         char *errMsg;
@@ -42,7 +46,7 @@ public:
         sqlite3_exec(DB, create_unknown_table.c_str(), nullptr, nullptr, &errMsg);
         sqlite3_exec(DB, delete_known_table.c_str(), nullptr, nullptr, &errMsg);
         sqlite3_exec(DB, delete_unknown_table.c_str(), nullptr, nullptr, &errMsg);
-        cout << errMsg << "\n";
+        // cerr << errMsg << "\n";
     };
     void FillTheDB(FilePtr ourfile);
 };

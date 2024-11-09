@@ -27,9 +27,10 @@ private:
     po::variables_map m_vm; // контейнер для сохранения выбранных опций программы
 
     // Требуемые в программе переменные для работы с опциями меню
-    filesystem::path m_inputDBPath;  // Путь до базы NSRL
-    filesystem::path m_scanDirPath;  // Путь для сканирования
-    filesystem::path m_outputDBPath; // Путь для создания бд для ответа
+    filesystem::path m_inputDBPath;      // Путь до базы NSRL
+    filesystem::path m_scanDirPath;      // Путь для сканирования
+    filesystem::path m_outputDBPath;     // Путь для создания бд для ответа
+    string m_outputDBName = "output.db"; // Название созданной бд
 };
 
 #endif // MENU_EAPPLICATION_H
