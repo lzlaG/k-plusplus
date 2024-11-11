@@ -1,6 +1,11 @@
 #требуемая cmake версия
 cmake_minimum_required(VERSION 3.10)
 
+#доп флаги для cmake
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 #требуемый стандарт C++
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -67,7 +72,36 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 set(CLI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/cli)
 set(GUI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/gui)
 
-#сборка всего приложения
+#сборка всего приложения(cli версия)
 add_executable(k-pp-cli ${SOURCE_DIR}/cli/сli_main.cpp)
 target_link_libraries(k-pp-cli application)
 set_target_properties(k-pp-cli PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CLI_OUTPUT_DIR})
+
+#ищем qt
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+
+# задаем исходники для гуя
+set(PROJECT_SOURCES
+        ${SOURCE_DIR}/gui/main.cpp
+        ${SOURCE_DIR}/gui/mainwindow.cpp
+        ${SOURCE_DIR}/gui/mainwindow.h
+        ${SOURCE_DIR}/gui/mainwindow.ui
+)
+
+# собираем гуй
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(k-pp-gui
+        MANUAL_FINALIZATION
+        ${PROJECT_SOURCES}
+    )
+endif()
+target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets application)
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(k-pp-gui)
+endif()
+
+#отправляем в нужную директорию
+set_target_properties(k-pp-gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${GUI_OUTPUT_DIR})
+
+
