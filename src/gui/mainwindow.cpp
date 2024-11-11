@@ -53,6 +53,7 @@ void MainWindow::on_pushButton_clicked()
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
         std::vector<QString> args = {
+                               "k-pp-cli",
                                "--nsrl-db-path", "kngjkndfjkdjkbjgfdbjd",
                                 "--scan-dir", ScanDir,
                                "--output-db-path", "./",
@@ -65,8 +66,17 @@ void MainWindow::on_pushButton_clicked()
             std::cout << cstrArgs[i] << std::endl;
             i+=1;
         }
+
+        int argc = 9;
+        const char* argv[] = {
+            "program_name",   // Имя программы
+            "--nsrl-db-path", "VERY_IMPORTANT_NSRL_DB",
+            "--scan-dir", "VERY_IMPORTANT_DIR",
+            "--output-db-path", "./",
+            "--output-db-name", "SHAMAN_LEATHER_PANTS.db"
+        };
         qDebug("СТАРТ ОБРАБОТКИ");
-        Application app(4, cstrArgs.data());
+        Application app(argc, argv);
         int ok = app.exec();
         qDebug("КОНЕЦ ОБРАБОТКИ");
     }
