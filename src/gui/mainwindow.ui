@@ -14,18 +14,28 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>1161</width>
-      <height>701</height>
+      <y>130</y>
+      <width>1221</width>
+      <height>571</height>
      </rect>
     </property>
-    <property name="text">
-     <string>КАКАЯ ЖЕ ЭТО ОГРОМНАЯ КНОПКА. КТО СДЕЛАЛ ЕЕ ТАКОЙ ОГРОМНОЙ, ПОФИКСИТЕ ПЖ. В ЭТУ КНОПКУ ВОЙНА И МИР БЕЗ СОКРАЩЕНИЙ ВОЙДУТ</string>
+    <property name="currentIndex">
+     <number>0</number>
     </property>
+    <widget class="QWidget" name="KnownTab">
+     <attribute name="title">
+      <string>Известные файлы</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="UnknownTab">
+     <attribute name="title">
+      <string>Неизвестные файлы</string>
+     </attribute>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
