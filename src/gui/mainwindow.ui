@@ -37,6 +37,55 @@
      </attribute>
     </widget>
    </widget>
+   <widget class="QLabel" name="ScanLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>211</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Директория для сканирования:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="NsrlLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Путь к NSRL базе данных:</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="ScanDirLine">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>0</y>
+      <width>811</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="SetupDirButton">
+    <property name="geometry">
+     <rect>
+      <x>1047</x>
+      <y>0</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
