@@ -23,24 +23,29 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 #собираем sqlite3
-add_library(sqlite3 STATIC ${LIB_DIR}/sqlite3/sqlite3.c)
+add_library(sqlite3 STATIC ${LIB_DIR}/sqlite3/sqlite3.c
+    lib/sqlite3/sqlite3.h)
 
 #собираем outputdb библиотеку
-add_library(OutputDB ${SOURCE_DIR}/OutputDB/outputDB.cpp)
+add_library(OutputDB ${SOURCE_DIR}/OutputDB/outputDB.cpp
+    src/OutputDB/outputDB.h)
 target_link_libraries(OutputDB sqlite3)
 
 # собираем nsrlrepo библиотеку
-add_library(nsrlRepository STATIC ${SOURCE_DIR}/nsrlRepository/nsrlRepository.cpp)
+add_library(nsrlRepository STATIC ${SOURCE_DIR}/nsrlRepository/nsrlRepository.cpp
+    src/nsrlRepository/nsrlRepository.h)
 target_link_libraries(nsrlRepository sqlite3)
 
 #компиляция getfilefromdir библиотеки
-add_library(getFileFromDir STATIC ${SOURCE_DIR}/getFileFromDir/getFileFromDir.cpp)
+add_library(getFileFromDir STATIC ${SOURCE_DIR}/getFileFromDir/getFileFromDir.cpp
+    src/getFileFromDir/getFileFromDir.h)
 
 # компиляция cryptopp
 add_subdirectory(${LIB_DIR}/cryptopp-cmake)
 
 #компиляция calculateshahash билиотеки
-add_library(calculateShaHash STATIC ${SOURCE_DIR}/calculateShaHash/calculateShaHash.cpp)
+add_library(calculateShaHash STATIC ${SOURCE_DIR}/calculateShaHash/calculateShaHash.cpp
+    src/calculateShaHash/calculateShaHash.h)
 target_link_libraries(calculateShaHash PRIVATE cryptopp)
 
 # ищем и задем путь для буст
@@ -52,14 +57,17 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "NOT BOOST")
 endif()
 
-
 # собираем application библиотеку
-add_library(application STATIC ${SOURCE_DIR}/application/application.cpp)
+add_library(application STATIC ${SOURCE_DIR}/application/application.cpp
+    src/application/application.h)
 target_link_libraries(application calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
 
-#сборка всего приложения
-add_executable(k-pp ${SOURCE_DIR}/main.cpp)
-target_link_libraries(k-pp application)
-
-#отправим собранное приложение в необходимую директорию
+#задаем директорию для уже собранных файлов
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
+set(CLI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/cli)
+set(GUI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/gui)
+
+#сборка всего приложения
+add_executable(k-pp-cli ${SOURCE_DIR}/cli/сli_main.cpp)
+target_link_libraries(k-pp-cli application)
+set_target_properties(k-pp-cli PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CLI_OUTPUT_DIR})
