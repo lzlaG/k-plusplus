@@ -18,6 +18,8 @@ public:
 private slots:
     void on_SetupDirButton_clicked();
 
+    void on_SetupNsrlButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

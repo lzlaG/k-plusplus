@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->ScanDirLine->setReadOnly(true);
+    ui->NsrlFileLine->setReadOnly(true);
 }
 
 MainWindow::~MainWindow()
@@ -21,12 +22,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_SetupDirButton_clicked()
 {
-    QString ScanDir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+    QString ScanDir = QFileDialog::getExistingDirectory(this, tr("Выберите директорию для сканирования"),
                                                 "",
                                                 QFileDialog::ShowDirsOnly
                                                 | QFileDialog::DontResolveSymlinks);
     if (ScanDir.isEmpty())
             return;
     ui->ScanDirLine->setText(ScanDir);
+}
+
+
+void MainWindow::on_SetupNsrlButton_clicked()
+{
+    QString NsrlFile = QFileDialog::getOpenFileName(this,
+                                                    tr("Выберите NSRL БД"),
+                                                    "",
+                                                    tr("Базы данных (*.db)"));
+    if (NsrlFile.isEmpty())
+            return;
+    ui->NsrlFileLine->setText(NsrlFile);
 }
 
