@@ -21,9 +21,19 @@ using namespace std;
 Application::Application(int argc, const char **argv)
 {
     // Добавляем пункты меню
-    m_desc.add_options()("help,h", "Вывести справку")("nsrl-db-path,n", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа")("output-db-name,a", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать название для базы ответа");
+    m_desc.add_options()
+            ("help,h", "Вывести справку")
+            ("nsrl-db-path,n", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")
+            ("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")
+            ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа")
+            ("output-db-name,r", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать название для базы ответа");
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
-    po::notify(m_vm);                                            // записываем аргументы в переменные в программе
+    po::notify(m_vm);   // записываем аргументы в переменные в программе
+
+    cout << "NSRL DB Path: " << m_inputDBPath << endl;
+    cout << "Scan Dir: " << m_scanDirPath << endl;
+    cout << "Output DB Path: " << m_outputDBPath << endl;
+    cout << "Output DB Name: " << m_outputDBName << endl;
 }
 
 /**

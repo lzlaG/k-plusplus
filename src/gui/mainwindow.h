@@ -20,8 +20,13 @@ private slots:
 
     void on_SetupNsrlButton_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+protected:
+    QString ScanDir;
+    QString NsrlFile;
 };
 
 #endif // MAINWINDOW_H
