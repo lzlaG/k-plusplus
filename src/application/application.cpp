@@ -23,10 +23,10 @@ Application::Application(int argc, const char **argv)
     // Добавляем пункты меню
     m_desc.add_options()
             ("help,h", "Вывести справку")
-            ("nsrl-db-path,n", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")
+            ("nsrl-db-path,r", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")
             ("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")
             ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа")
-            ("output-db-name,r", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать название для базы ответа");
+            ("output-db-name,n", po::value<std::string>(&m_outputDBName)->composing(), "задать название для базы ответа");
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
     po::notify(m_vm);   // записываем аргументы в переменные в программе
 
@@ -58,7 +58,7 @@ int Application::exec()
 
     if (!m_vm.count("nsrl-db-path"))
     {
-        cout << "\033[93m" << "Параметр nsrl-db-path не введён." << "\033[0m" << " Используется не полная тестовая бд nsrl" << endl;
+        cout << "\033[93m" << "Параметр nsrl-db-path не введён." << endl;
         //m_inputDBPath = "../src/nsrlRepository/test.db";
     }
 

@@ -51,18 +51,31 @@ void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
-        int argc = 9;
-        const char* argv[] = {
-            "program_name",   // Имя программы
-            "--nsrl-db-path", qPrintable(NsrlFile),
-            "--scan-dir", qPrintable(ScanDir),
-            "--output-db-path", qPrintable(QCoreApplication::applicationDirPath()),
-            "--output-db-name", "SHAMAN_LEATHER_PANTS.db"
+        // читаем параметры
+        QString nsrlFile = NsrlFile;
+        QString scanDir = ScanDir;
+        QString outputDbPath = QCoreApplication::applicationDirPath();
+        QString outputDbName = "SHAMAN_LEATHER_PANTS.db";
+
+        // Создаем хранилище строк
+        std::vector<std::string> argStorage = {
+            "program_name",
+            "--nsrl-db-path", nsrlFile.toStdString(),
+            "--scan-dir", scanDir.toStdString(),
+            "--output-db-path", outputDbPath.toStdString(),
+            "--output-db-name", outputDbName.toStdString()
         };
-        qDebug("СТАРТ ОБРАБОТКИ");
-        Application app(argc, argv);
-        int ok = app.exec();
-        qDebug("КОНЕЦ ОБРАБОТКИ");
+
+        // Преобразуем в массив указателей
+        std::vector<const char*> argv;
+        for (const auto& arg : argStorage) {
+            argv.push_back(arg.c_str());
+        }
+
+        // Передаем аргументы
+        int argc = argv.size();
+        Application app(argc, argv.data());
+        app.exec();
     }
 }
 

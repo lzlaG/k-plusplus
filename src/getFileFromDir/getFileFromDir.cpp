@@ -36,15 +36,12 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
         }
         catch (const filesystem_error &e)
         {
-            cout << "ААААААА, ПОЛОМКА В КАТЧЕ 1" << endl;
             cerr << "Filesystem error: " << fileName << ": " << e.what() << endl;
         }
         catch (const exception &e)
         {
-            cout << "ААААААА, ПОЛОМКА В КАТЧЕ 2" << endl;
             cerr << "Another error :( :" << fileName << ": " << e.what() << endl;
         }
     }
-    cout << "Всего просканировано: " << result.size() << " файлов";
     return result;
 }
