@@ -30,16 +30,21 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
                 file->path = filePath.string();
                 file->name = fileName.string();
                 result.push_back(file);
+                cout << "Считывание:" << file->path  <<
+                     " Файл номер: " << result.size() << endl;
             }
         }
         catch (const filesystem_error &e)
         {
+            cout << "ААААААА, ПОЛОМКА В КАТЧЕ 1" << endl;
             cerr << "Filesystem error: " << fileName << ": " << e.what() << endl;
         }
         catch (const exception &e)
         {
+            cout << "ААААААА, ПОЛОМКА В КАТЧЕ 2" << endl;
             cerr << "Another error :( :" << fileName << ": " << e.what() << endl;
         }
     }
+    cout << "Всего просканировано: " << result.size() << " файлов";
     return result;
 }
