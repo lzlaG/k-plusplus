@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QStandardItemModel>
+#include <QThread>
+#include <QString>
 
 namespace Ui {
 class MainWindow;
@@ -26,9 +28,13 @@ private slots:
 private:
     Ui::MainWindow *ui;
 protected:
-    QStandardItemModel *model;
+    QStandardItemModel *KnownModel = new QStandardItemModel(this);
+    QStandardItemModel *UnknownModel = new QStandardItemModel(this);
     QString ScanDir;
     QString NsrlFile;
+    QThread *Thread;
+    QString ReadFiles(QString NsrlFile, QString ScanDir);
+
 };
 
 #endif // MAINWINDOW_H

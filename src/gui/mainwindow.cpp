@@ -11,13 +11,39 @@
 #include <QTreeView>
 #include <QTabWidget>
 
+QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
+
+    // Получаем виджет с указанной вкладки
+    QWidget* tabContent = tabWidget->widget(tabIndex);
+    // Ищем QTreeView внутри вкладки
+    QTreeView* treeView = tabContent->findChild<QTreeView*>();
+    if (!treeView) {
+        qWarning() << "QTreeView not found on tab" << tabIndex;
+    }
+    return treeView;
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
+    //параметры моделей
+    KnownModel->setColumnCount(3);
+    UnknownModel->setColumnCount(3);
+    KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+
+    //достаем таблицы из вкладок
+    QTreeView* firstTreeView = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* secondTreeView = getTreeViewFromTab(ui->tabWidget, 1);
+
+    // задаем модели для таблиц
+    firstTreeView->setModel(KnownModel);
+    secondTreeView->setModel(UnknownModel);
 }
 
 MainWindow::~MainWindow()
@@ -48,54 +74,42 @@ void MainWindow::on_SetupNsrlButton_clicked()
     ui->NsrlFileLine->setText(NsrlFile);
 }
 
-QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
+QString MainWindow::ReadFiles(QString NsrlFile, QString ScanDir)
+{
+    // читаем параметры
+    QString nsrlFile = NsrlFile;
+    QString scanDir = ScanDir;
+    QString outputDbPath = QCoreApplication::applicationDirPath();
+    QString outputDbName = "SHAMAN_LEATHER_PANTS.db";
 
-    // Получаем виджет с указанной вкладки
-    QWidget* tabContent = tabWidget->widget(tabIndex);
-    // Ищем QTreeView внутри вкладки
-    QTreeView* treeView = tabContent->findChild<QTreeView*>();
-    if (!treeView) {
-        qWarning() << "QTreeView not found on tab" << tabIndex;
+    // Создаем хранилище строк
+    std::vector<std::string> argStorage = {
+        "program_name",
+        "--nsrl-db-path", nsrlFile.toStdString(),
+        "--scan-dir", scanDir.toStdString(),
+        "--output-db-path", outputDbPath.toStdString(),
+        "--output-db-name", outputDbName.toStdString()
+    };
+
+    // Преобразуем в массив указателей
+    std::vector<const char*> argv;
+    for (const auto& arg : argStorage) {
+        argv.push_back(arg.c_str());
     }
-    return treeView;
+
+    // Передаем аргументы
+    int argc = argv.size();
+    Application app(argc, argv.data());
+    app.exec();
+
+    return outputDbPath+outputDbName;
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
-        // читаем параметры
-        QString nsrlFile = NsrlFile;
-        QString scanDir = ScanDir;
-        QString outputDbPath = QCoreApplication::applicationDirPath();
-        QString outputDbName = "SHAMAN_LEATHER_PANTS.db";
 
-        // Создаем хранилище строк
-        std::vector<std::string> argStorage = {
-            "program_name",
-            "--nsrl-db-path", nsrlFile.toStdString(),
-            "--scan-dir", scanDir.toStdString(),
-            "--output-db-path", outputDbPath.toStdString(),
-            "--output-db-name", outputDbName.toStdString()
-        };
-
-        // Преобразуем в массив указателей
-        std::vector<const char*> argv;
-        for (const auto& arg : argStorage) {
-            argv.push_back(arg.c_str());
-        }
-
-        // Передаем аргументы
-        int argc = argv.size();
-        Application app(argc, argv.data());
-        app.exec();
-
-        model = new QStandardItemModel(this);
-        QTreeView* firstTreeView = getTreeViewFromTab(ui->tabWidget, 0);
-        QTreeView* secondTreeView = getTreeViewFromTab(ui->tabWidget, 1);
-
-        model->setColumnCount(5);
-        firstTreeView->setModel(model);
     }
 }
 
