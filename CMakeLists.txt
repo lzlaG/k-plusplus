@@ -87,10 +87,6 @@ set(PROJECT_SOURCES
         ${SOURCE_DIR}/gui/mainwindow.cpp
         ${SOURCE_DIR}/gui/mainwindow.h
         ${SOURCE_DIR}/gui/mainwindow.ui
-        ${SOURCE_DIR}/gui/threadobj.h
-        ${SOURCE_DIR}/gui/threadobj.cpp
-        ${SOURCE_DIR}/gui/dbiterator.h
-        ${SOURCE_DIR}/gui/dbiterator.cpp
 )
 
 # собираем гуй

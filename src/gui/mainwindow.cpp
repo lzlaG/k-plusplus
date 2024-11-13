@@ -107,7 +107,7 @@ QString MainWindow::ReadFiles(QString NsrlFile, QString ScanDir)
     return outputDbPath;
 }
 
-void MainWindow::FillTreeView(QTreeView* treeView, const char* queryStr, QString DB_path)
+void MainWindow::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, const char* queryStr, QString DB_path)
 {
     sqlite3 *DB;
     sqlite3_open(DB_path.toUtf8().constData(), &DB);
@@ -126,10 +126,10 @@ void MainWindow::FillTreeView(QTreeView* treeView, const char* queryStr, QString
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
 
-        UnknownModel->appendRow(QueryResult);
+        neededModel->appendRow(QueryResult);
     }
-    treeView->setModel(UnknownModel);
-    sqlite3_finalize(stmt); // Освобождение ресурсов
+    treeView->setModel(neededModel);
+    sqlite3_finalize(stmt); // Завершение запроса
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -138,7 +138,9 @@ void MainWindow::on_pushButton_clicked()
     {
         QString DB_path = ReadFiles(NsrlFile, ScanDir);
         QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
-        FillTreeView(unknownview, "SELECT * FROM UNKNOWN_FILES;", DB_path);
+        QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
+        FillTreeView(unknownview, UnknownModel,"SELECT * FROM UNKNOWN_FILES;", DB_path);
+        FillTreeView(knownview, KnownModel, "SELECT * FROM KNOWN_FILES;", DB_path);
     }
 }
 
