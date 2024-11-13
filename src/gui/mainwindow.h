@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QThread>
 #include <QString>
+#include <QTreeView>
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ protected:
     QString NsrlFile;
     QThread *Thread;
     QString ReadFiles(QString NsrlFile, QString ScanDir);
+    void FillTreeView(QTreeView* treeView, const char* queryStr, QString DB_path);
 
 };
 

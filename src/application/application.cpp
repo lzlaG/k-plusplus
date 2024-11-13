@@ -25,15 +25,15 @@ Application::Application(int argc, const char **argv)
             ("help,h", "Вывести справку")
             ("nsrl-db-path,r", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")
             ("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")
-            ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа")
-            ("output-db-name,n", po::value<std::string>(&m_outputDBName)->composing(), "задать название для базы ответа");
+            ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа");
+            //("output-db-name,n", po::value<std::string>(&m_outputDBName)->composing(), "задать название для базы ответа");
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
-    po::notify(m_vm);   // записываем аргументы в переменные в программе
+    po::notify(m_vm);   // записываем аргументы в переменные в программу
 
     cout << "NSRL DB Path: " << m_inputDBPath << endl;
     cout << "Scan Dir: " << m_scanDirPath << endl;
     cout << "Output DB Path: " << m_outputDBPath << endl;
-    cout << "Output DB Name: " << m_outputDBName << endl;
+    //cout << "Output DB Name: " << m_outputDBName << endl;
 }
 
 /**
@@ -64,7 +64,7 @@ int Application::exec()
 
     vector<FilePtr> filename = getFileFromDir(m_scanDirPath);               // Рекурсивный обход указанной директории
     NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);                // Инициализация NSRL репозитория
-    OutputDB ourDatabase = OutputDB(m_outputDBPath.append(m_outputDBName)); // Создание выходных баз данных
+    OutputDB ourDatabase = OutputDB(m_outputDBPath); // Создание выходной базы данных
 
     int j = 0;
     for (int i = 0; i < filename.size(); i++)

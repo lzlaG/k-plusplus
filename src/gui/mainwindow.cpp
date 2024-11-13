@@ -10,6 +10,9 @@
 #include "../application/application.h"
 #include <QTreeView>
 #include <QTabWidget>
+#include "../../lib/sqlite3/sqlite3.h"
+
+
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
 
@@ -38,12 +41,12 @@ MainWindow::MainWindow(QWidget *parent) :
     UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
 
     //достаем таблицы из вкладок
-    QTreeView* firstTreeView = getTreeViewFromTab(ui->tabWidget, 0);
-    QTreeView* secondTreeView = getTreeViewFromTab(ui->tabWidget, 1);
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
 
     // задаем модели для таблиц
-    firstTreeView->setModel(KnownModel);
-    secondTreeView->setModel(UnknownModel);
+    KnownTable->setModel(KnownModel);
+    UnknownTable->setModel(UnknownModel);
 }
 
 MainWindow::~MainWindow()
@@ -79,16 +82,15 @@ QString MainWindow::ReadFiles(QString NsrlFile, QString ScanDir)
     // читаем параметры
     QString nsrlFile = NsrlFile;
     QString scanDir = ScanDir;
-    QString outputDbPath = QCoreApplication::applicationDirPath();
-    QString outputDbName = "SHAMAN_LEATHER_PANTS.db";
+    QString outputDbPath = QCoreApplication::applicationDirPath()+"SMESHARIK.db";
+    //QString outputDbName = "SHAMAN_LEATHER_PANTS.db";
 
     // Создаем хранилище строк
     std::vector<std::string> argStorage = {
         "program_name",
         "--nsrl-db-path", nsrlFile.toStdString(),
         "--scan-dir", scanDir.toStdString(),
-        "--output-db-path", outputDbPath.toStdString(),
-        "--output-db-name", outputDbName.toStdString()
+        "--output-db-path", outputDbPath.toStdString()
     };
 
     // Преобразуем в массив указателей
@@ -102,14 +104,41 @@ QString MainWindow::ReadFiles(QString NsrlFile, QString ScanDir)
     Application app(argc, argv.data());
     app.exec();
 
-    return outputDbPath+outputDbName;
+    return outputDbPath;
+}
+
+void MainWindow::FillTreeView(QTreeView* treeView, const char* queryStr, QString DB_path)
+{
+    sqlite3 *DB;
+    sqlite3_open(DB_path.toUtf8().constData(), &DB);
+    sqlite3_stmt* stmt;
+    if (sqlite3_prepare_v2(DB, queryStr, -1, &stmt, nullptr) != SQLITE_OK) {
+        qDebug() << "Ошибка подготовки запроса:" << sqlite3_errmsg(DB);
+        return;
+    }
+
+    // Итерация по строкам результата
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        QList<QStandardItem*> QueryResult;
+
+        // Чтение данных из каждой колонки
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)))); // Колонка 1
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
+
+        UnknownModel->appendRow(QueryResult);
+    }
+    treeView->setModel(UnknownModel);
+    sqlite3_finalize(stmt); // Освобождение ресурсов
 }
 
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
-
+        QString DB_path = ReadFiles(NsrlFile, ScanDir);
+        QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
+        FillTreeView(unknownview, "SELECT * FROM UNKNOWN_FILES;", DB_path);
     }
 }
 
