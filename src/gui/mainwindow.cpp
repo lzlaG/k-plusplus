@@ -8,6 +8,8 @@
 #include <QFileSystemModel>
 #include <QDebug>
 #include "../application/application.h"
+#include <QTreeView>
+#include <QTabWidget>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,6 +48,17 @@ void MainWindow::on_SetupNsrlButton_clicked()
     ui->NsrlFileLine->setText(NsrlFile);
 }
 
+QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
+
+    // Получаем виджет с указанной вкладки
+    QWidget* tabContent = tabWidget->widget(tabIndex);
+    // Ищем QTreeView внутри вкладки
+    QTreeView* treeView = tabContent->findChild<QTreeView*>();
+    if (!treeView) {
+        qWarning() << "QTreeView not found on tab" << tabIndex;
+    }
+    return treeView;
+}
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -76,6 +89,13 @@ void MainWindow::on_pushButton_clicked()
         int argc = argv.size();
         Application app(argc, argv.data());
         app.exec();
+
+        model = new QStandardItemModel(this);
+        QTreeView* firstTreeView = getTreeViewFromTab(ui->tabWidget, 0);
+        QTreeView* secondTreeView = getTreeViewFromTab(ui->tabWidget, 1);
+
+        model->setColumnCount(5);
+        firstTreeView->setModel(model);
     }
 }
 

@@ -24,17 +24,37 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="KnownTab">
      <attribute name="title">
       <string>Известные файлы</string>
      </attribute>
+     <widget class="QTreeView" name="KnownView">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>1201</width>
+        <height>521</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="UnknownTab">
      <attribute name="title">
       <string>Неизвестные файлы</string>
      </attribute>
+     <widget class="QTreeView" name="UnknownView">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>1201</width>
+        <height>521</height>
+       </rect>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QLabel" name="ScanLabel">
