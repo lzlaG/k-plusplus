@@ -57,6 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
 
+    //начальное значение лейбла анекдотов
+    ui->AnekdotLabel->setText("");
 }
 
 MainWindow::~MainWindow()

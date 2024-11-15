@@ -25,10 +25,10 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 
     for (int i = 0; i < filename.size(); i++)
     {
-        if (i%5 == 0)
+        if (i%70 == 0)
         {
             emit AnekdotTime();
-        }
+        };
         future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
                                 { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
         a1.wait();
