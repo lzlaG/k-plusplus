@@ -19,7 +19,8 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     filesystem::path CorrectPath = ScanDirCorrect;
     vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
     NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория
-    OutputDB ourDatabase = OutputDB(PathToDB.toStdString());            // Создание выходной базы данных
+    OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
+    emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
     for (int i = 0; i < filename.size(); i++)
     {
         future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла

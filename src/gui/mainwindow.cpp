@@ -55,7 +55,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
-    //ui->progressBar->setRange(0, 2302);
 }
 
 MainWindow::~MainWindow()
@@ -73,12 +72,6 @@ void MainWindow::on_SetupDirButton_clicked()
     if (ScanDir.isEmpty())
             return;
     ui->ScanDirLine->setText(ScanDir);
-    // подсчет файлов в директории
-    QDir dir(ScanDir);
-    dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
-    int total_files = dir.count();
-    ui->progressBar->setRange(0, total_files);
-    qDebug() << "Количество файлов в сканируемой директории: " << total_files;
 }
 
 
@@ -97,10 +90,18 @@ void MainWindow::updateProgress(int value) {
     ui->progressBar->setValue(value);  // Обновление значения прогресс-бара
 };
 
+void MainWindow::RangeUpdate(int value)
+{
+    ui->progressBar->setRange(0, value);
+};
+
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
+        //обнуляем значение прогресс бара
+        ui->progressBar->setValue(0);
+
         QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
         QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
         Slave *slave1 =new Slave(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
@@ -117,9 +118,12 @@ void MainWindow::on_pushButton_clicked()
         QObject::connect(slave1, &Slave::finished, slave1, &Slave::deleteLater);
         QObject::connect(Thread, &QThread::finished, Thread, &QThread::deleteLater);
 
+        //задаем обновить диапазон прогрессбара(когда испустится сигнал)
+        QObject::connect(slave1, &Slave::ChangeRange, this, &MainWindow::RangeUpdate);
+
         //обновляем прогресс бар
         QObject::connect(slave1, &Slave::ProgressUpdated, this, &MainWindow::updateProgress);
-        Thread->start();
+        Thread->start(); //начинаем обработку
     }
 }
 

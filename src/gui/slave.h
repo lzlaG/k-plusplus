@@ -43,6 +43,7 @@ public slots:
 signals:
     void finished();
     int ProgressUpdated(int value);
+    int ChangeRange(int value);
 };
 
 #endif // SLAVE_H
