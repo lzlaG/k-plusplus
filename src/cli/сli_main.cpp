@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "../application/cli/application.h"
+#include "../application/application.h"
 
 using namespace std;
 

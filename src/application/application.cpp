@@ -5,11 +5,11 @@
 #include <vector>
 #include <future>
 
-#include "../../nsrlRepository/nsrlRepository.h"
-#include "../../getFileFromDir/getFileFromDir.h"
-#include "../../OutputDB/outputDB.h"
-#include "../../calculateShaHash/calculateShaHash.h"
-#include "../../../models/fileSchema.h"
+#include "../nsrlRepository/nsrlRepository.h"
+#include "../getFileFromDir/getFileFromDir.h"
+#include "../OutputDB/outputDB.h"
+#include "../calculateShaHash/calculateShaHash.h"
+#include "../../models/fileSchema.h"
 
 using namespace std;
 
@@ -78,7 +78,6 @@ int Application::exec()
                                 { nsrlRepo.IsHashInDB(filename[i]); });
         a2.wait();
         ourDatabase.FillTheDB(filename[i]); // Заполнение баз данных
-        cout << "ЕДРИТЬ КОЛОТИТЬ ЭТО ЖЕ ВЕРСИЯ С ИНТЕРФЕЙСОМ" << endl;
     }
 
     filename.clear();

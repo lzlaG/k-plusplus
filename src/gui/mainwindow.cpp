@@ -52,9 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
     // задаем модели для таблиц
     KnownTable->setModel(KnownModel);
     UnknownTable->setModel(UnknownModel);
-
-    //задаем стартовое значение прогресс бара
-    ui->progressBar->setValue(0);
 }
 
 MainWindow::~MainWindow()
@@ -72,11 +69,6 @@ void MainWindow::on_SetupDirButton_clicked()
     if (ScanDir.isEmpty())
             return;
     ui->ScanDirLine->setText(ScanDir);
-    // подсчет файлов в директории
-    QDir dir(ScanDir);
-    dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
-    int total_files = dir.count();
-    ui->progressBar->setRange(0, total_files);
 }
 
 

@@ -62,15 +62,10 @@ if(NOT Boost_FOUND)
     message(FATAL_ERROR "NOT BOOST")
 endif()
 
-# собираем application библиотеку(cli версия)
-add_library(application-cli STATIC ${SOURCE_DIR}/application/cli/application.cpp
-                                   ${SOURCE_DIR}/application/cli/application.h)
-target_link_libraries(application-cli calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
-
-#собираем application библиотеку с модификациями для гуя
-add_library(application-gui STATIC ${SOURCE_DIR}/application/gui/application.cpp
-                                   ${SOURCE_DIR}/application/gui/application.h)
-target_link_libraries(application-gui calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
+# собираем application библиотеку
+add_library(application STATIC ${SOURCE_DIR}/application/application.cpp
+    src/application/application.h)
+target_link_libraries(application calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
 
 #задаем директорию для уже собранных файлов
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
@@ -79,7 +74,7 @@ set(GUI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/gui)
 
 #сборка всего приложения(cli версия)
 add_executable(k-pp-cli ${SOURCE_DIR}/cli/сli_main.cpp)
-target_link_libraries(k-pp-cli application-cli)
+target_link_libraries(k-pp-cli application)
 set_target_properties(k-pp-cli PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CLI_OUTPUT_DIR})
 
 #ищем qt
@@ -99,11 +94,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(k-pp-gui
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        src/gui/slave.h 
-        src/gui/slave.cpp
+        src/gui/slave.h src/gui/slave.cpp
     )
 endif()
-target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets application-gui)
+target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets application)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(k-pp-gui)
 endif()
