@@ -42,6 +42,7 @@ public slots:
     void doWork();
 signals:
     void finished();
+    int ProgressUpdated(int value);
 };
 
 #endif // SLAVE_H

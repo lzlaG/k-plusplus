@@ -2,32 +2,35 @@
 #include <QString>
 #include <QStandardItemModel>
 #include <QCoreApplication>
-#include "../application/application.h"
 #include "../../lib/sqlite3/sqlite3.h"
 #include <filesystem>
+#include "../nsrlRepository/nsrlRepository.h"
+#include "../OutputDB/outputDB.h"
+#include "../getFileFromDir/getFileFromDir.h"
+#include "../calculateShaHash/calculateShaHash.h"
+#include <future>
+
 
 QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 {
     QString PathToDB = QCoreApplication::applicationDirPath()+"SMESHARIKI.db";
     std::filesystem::path ScanDirCorrect = ScanDir.toStdString();
-    // Создаем хранилище строк
-    std::vector<std::string> argStorage = {
-        "program_name",
-        "--nsrl-db-path", NsrlFile.toStdString(),
-        "--scan-dir", ScanDirCorrect,
-        "--output-db-path", PathToDB.toStdString()
-    };
 
-    // Преобразуем в массив указателей
-    std::vector<const char*> argv;
-    for (const auto& arg : argStorage) {
-        argv.push_back(arg.c_str());
+    filesystem::path CorrectPath = ScanDirCorrect;
+    vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
+    NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория
+    OutputDB ourDatabase = OutputDB(PathToDB.toStdString());            // Создание выходной базы данных
+    for (int i = 0; i < filename.size(); i++)
+    {
+        future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
+                                { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
+        a1.wait();
+        future<void> a2 = async([&nsrlRepo, filename, i]
+                                { nsrlRepo.IsHashInDB(filename[i]); });
+        a2.wait();
+        ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
+        emit ProgressUpdated(i+1);
     }
-
-    // Передаем аргументы
-    int argc = argv.size();
-    Application app(argc, argv.data());
-    app.exec();
 
     return PathToDB;
 }

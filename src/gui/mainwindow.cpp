@@ -52,6 +52,10 @@ MainWindow::MainWindow(QWidget *parent) :
     // задаем модели для таблиц
     KnownTable->setModel(KnownModel);
     UnknownTable->setModel(UnknownModel);
+
+    //начальное значение прогресс бара
+    ui->progressBar->setValue(0);
+    //ui->progressBar->setRange(0, 2302);
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +73,12 @@ void MainWindow::on_SetupDirButton_clicked()
     if (ScanDir.isEmpty())
             return;
     ui->ScanDirLine->setText(ScanDir);
+    // подсчет файлов в директории
+    QDir dir(ScanDir);
+    dir.setFilter( QDir::AllEntries | QDir::NoDotAndDotDot );
+    int total_files = dir.count();
+    ui->progressBar->setRange(0, total_files);
+    qDebug() << "Количество файлов в сканируемой директории: " << total_files;
 }
 
 
@@ -83,7 +93,9 @@ void MainWindow::on_SetupNsrlButton_clicked()
     ui->NsrlFileLine->setText(NsrlFile);
 }
 
-
+void MainWindow::updateProgress(int value) {
+    ui->progressBar->setValue(value);  // Обновление значения прогресс-бара
+};
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -105,6 +117,8 @@ void MainWindow::on_pushButton_clicked()
         QObject::connect(slave1, &Slave::finished, slave1, &Slave::deleteLater);
         QObject::connect(Thread, &QThread::finished, Thread, &QThread::deleteLater);
 
+        //обновляем прогресс бар
+        QObject::connect(slave1, &Slave::ProgressUpdated, this, &MainWindow::updateProgress);
         Thread->start();
     }
 }

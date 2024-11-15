@@ -97,7 +97,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         src/gui/slave.h src/gui/slave.cpp
     )
 endif()
-target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets application)
+target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(k-pp-gui)
 endif()

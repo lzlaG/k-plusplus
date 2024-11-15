@@ -21,7 +21,7 @@ public:
 
 private slots:
     void on_SetupDirButton_clicked();
-
+    void updateProgress(int value);
     void on_SetupNsrlButton_clicked();
 
     void on_pushButton_clicked();
