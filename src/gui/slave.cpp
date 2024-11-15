@@ -2,7 +2,7 @@
 #include <QString>
 #include <QStandardItemModel>
 #include <QCoreApplication>
-#include "../application/application.h"
+#include "../application/gui/application.h"
 #include "../../lib/sqlite3/sqlite3.h"
 #include <filesystem>
 
