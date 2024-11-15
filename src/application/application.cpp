@@ -24,8 +24,8 @@ Application::Application(int argc, const char **argv)
     m_desc.add_options()
             ("help,h", "Вывести справку")
             ("nsrl-db-path,r", po::value<filesystem::path>(&m_inputDBPath)->composing(), "задать путь до базы nsrl")
-            ("scan-dir,s", po::value<filesystem::path>(&m_scanDirPath)->composing(), "задать папку для сканирования")
-            ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до база ответа");
+            ("scan-dir,s", po::value<std::string>(&m_scanDirPath)->composing(), "задать папку для сканирования")
+            ("output-db-path,o", po::value<filesystem::path>(&m_outputDBPath)->composing(), "задать путь до итогово бд");
             //("output-db-name,n", po::value<std::string>(&m_outputDBName)->composing(), "задать название для базы ответа");
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
     po::notify(m_vm);   // записываем аргументы в переменные в программу
@@ -62,7 +62,8 @@ int Application::exec()
         //m_inputDBPath = "../src/nsrlRepository/test.db";
     }
 
-    vector<FilePtr> filename = getFileFromDir(m_scanDirPath);               // Рекурсивный обход указанной директории
+    filesystem::path CorrectPath = m_scanDirPath;
+    vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
     NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);                // Инициализация NSRL репозитория
     OutputDB ourDatabase = OutputDB(m_outputDBPath); // Создание выходной базы данных
 

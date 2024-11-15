@@ -28,9 +28,9 @@ private:
 
     // Требуемые в программе переменные для работы с опциями меню
     filesystem::path m_inputDBPath;      // Путь до базы NSRL
-    filesystem::path m_scanDirPath;      // Путь для сканирования
+    std::string m_scanDirPath;      // Путь для сканирования
     filesystem::path m_outputDBPath;     // Путь для создания бд для ответа
-    string m_outputDBName = "output.db"; // Название созданной бд
+    //string m_outputDBName = "output.db"; // Название созданной бд
 };
 
 #endif // MENU_EAPPLICATION_H

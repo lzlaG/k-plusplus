@@ -94,6 +94,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(k-pp-gui
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        src/gui/slave.h src/gui/slave.cpp
     )
 endif()
 target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets application)

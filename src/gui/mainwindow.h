@@ -34,12 +34,6 @@ protected:
     QString ScanDir;
     QString NsrlFile;
     QThread *Thread;
-    QString ReadFiles(QString NsrlFile, QString ScanDir);
-    void FillTreeView(QTreeView* treeView,
-                      QStandardItemModel *neededModel,
-                      const char* queryStr,
-                      QString DB_path);
-
 };
 
 #endif // MAINWINDOW_H
