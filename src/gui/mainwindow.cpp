@@ -91,8 +91,21 @@ void MainWindow::on_pushButton_clicked()
     {
         QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
         QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
-        Slave slave1(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
-        slave1.doWork();
+        Slave *slave1 =new Slave(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
+        //инициализируем поток и перемещаем туда объект
+        Thread = new QThread(this);
+        slave1->moveToThread(Thread);
+
+        //соединяем сигналы, чтобы обозначить, что будет выполняться в потоке
+        QObject::connect(Thread, &QThread::started, slave1, &Slave::doWork);
+        QObject::connect(slave1, &Slave::destroyed, Thread, &QThread::quit);
+
+        // сигналы для правильного завершения потоков
+        QObject::connect(slave1, &Slave::finished, Thread, &QThread::quit);
+        QObject::connect(slave1, &Slave::finished, slave1, &Slave::deleteLater);
+        QObject::connect(Thread, &QThread::finished, Thread, &QThread::deleteLater);
+
+        Thread->start();
     }
 }
 

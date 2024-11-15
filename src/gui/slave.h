@@ -40,6 +40,8 @@ private:
                       QString DB_path);
 public slots:
     void doWork();
+signals:
+    void finished();
 };
 
 #endif // SLAVE_H

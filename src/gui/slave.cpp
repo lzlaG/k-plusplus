@@ -63,4 +63,5 @@ void Slave::doWork()
     QString OMEGAPATH = ReadFiles(NsrlFile, ScanDir);
     FillTreeView(KnownView, KnownModel, "SELECT * FROM KNOWN_FILES;", OMEGAPATH);
     FillTreeView(UnknownView, UnknownModel, "SELECT * FROM UNKNOWN_FILES;", OMEGAPATH);
+    emit finished();
 }
