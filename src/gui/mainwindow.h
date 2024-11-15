@@ -24,9 +24,8 @@ private slots:
     void updateProgress(int value);
     void RangeUpdate(int value);
     void on_SetupNsrlButton_clicked();
-
     void on_pushButton_clicked();
-
+    void AnekdotUpdate();
 private:
     Ui::MainWindow *ui;
 protected:

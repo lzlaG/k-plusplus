@@ -11,6 +11,7 @@
 #include <QTabWidget>
 #include "../../lib/sqlite3/sqlite3.h"
 #include "slave.h"
+#include "anekdots.h"
 
 
 
@@ -55,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
+
 }
 
 MainWindow::~MainWindow()
@@ -95,6 +97,14 @@ void MainWindow::RangeUpdate(int value)
     ui->progressBar->setRange(0, value);
 };
 
+void MainWindow::AnekdotUpdate()
+{
+    srand(time(0));
+    int random_anek = rand()%anekdots.size();
+    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
+    ui->AnekdotLabel->setText(NewAnekdot);
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
@@ -123,7 +133,11 @@ void MainWindow::on_pushButton_clicked()
 
         //обновляем прогресс бар
         QObject::connect(slave1, &Slave::ProgressUpdated, this, &MainWindow::updateProgress);
+
+        //обновляем анекдот
+        connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
+
     }
 }
 

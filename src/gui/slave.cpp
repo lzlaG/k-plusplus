@@ -9,6 +9,7 @@
 #include "../getFileFromDir/getFileFromDir.h"
 #include "../calculateShaHash/calculateShaHash.h"
 #include <future>
+#include <QTimer>
 
 
 QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
@@ -21,8 +22,13 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория
     OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
     emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
+
     for (int i = 0; i < filename.size(); i++)
     {
+        if (i%5 == 0)
+        {
+            emit AnekdotTime();
+        }
         future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
                                 { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
         a1.wait();
@@ -32,7 +38,6 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
         ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
         emit ProgressUpdated(i+1);
     }
-
     return PathToDB;
 }
 
@@ -60,7 +65,6 @@ void Slave::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, c
     treeView->setModel(neededModel);
     sqlite3_finalize(stmt); // Завершение запроса
 }
-
 
 void Slave::doWork()
 {
