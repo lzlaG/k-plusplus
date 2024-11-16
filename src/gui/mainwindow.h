@@ -26,6 +26,8 @@ private slots:
     void on_SetupNsrlButton_clicked();
     void on_pushButton_clicked();
     void AnekdotUpdate();
+    void BlockButtons();
+    void UnblockButtons();
 private:
     Ui::MainWindow *ui;
 protected:

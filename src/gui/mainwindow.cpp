@@ -107,6 +107,18 @@ void MainWindow::AnekdotUpdate()
     ui->AnekdotLabel->setText(NewAnekdot);
 }
 
+void MainWindow::BlockButtons()
+{
+    ui->SetupDirButton->setEnabled(false);
+    ui->SetupNsrlButton->setEnabled(false);
+    ui->pushButton->setEnabled(false);
+}
+void MainWindow::UnblockButtons()
+{
+    ui->SetupDirButton->setEnabled(true);
+    ui->SetupNsrlButton->setEnabled(true);
+    ui->pushButton->setEnabled(true);
+}
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
@@ -136,10 +148,16 @@ void MainWindow::on_pushButton_clicked()
         //обновляем прогресс бар
         QObject::connect(slave1, &Slave::ProgressUpdated, this, &MainWindow::updateProgress);
 
+        connect(slave1, &Slave::WorkStart, this, &MainWindow::BlockButtons);
+        connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons);
+
         //обновляем анекдот
         connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
 
+        ui->SetupDirButton->setEnabled(true);
+        ui->SetupDirButton->setEnabled(true);
+        ui->pushButton->setEnabled(true);
     }
 }
 

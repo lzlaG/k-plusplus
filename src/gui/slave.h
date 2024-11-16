@@ -45,6 +45,7 @@ signals:
     int ProgressUpdated(int value);
     int ChangeRange(int value);
     void AnekdotTime();
+    void WorkStart();
 };
 
 #endif // SLAVE_H
