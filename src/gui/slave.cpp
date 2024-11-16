@@ -9,14 +9,14 @@
 #include "../getFileFromDir/getFileFromDir.h"
 #include "../calculateShaHash/calculateShaHash.h"
 #include <future>
-#include <QTimer>
-
+#include <QDateTime>
 
 QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 {
-    QString PathToDB = QCoreApplication::applicationDirPath()+"SMESHARIKI.db";
-    std::filesystem::path ScanDirCorrect = ScanDir.toStdString();
 
+    QString PathToDB = QCoreApplication::applicationDirPath()+
+            QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss")+".db"; //уникальное имя для бд
+    std::filesystem::path ScanDirCorrect = ScanDir.toStdString();
     filesystem::path CorrectPath = ScanDirCorrect;
     vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
     NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория

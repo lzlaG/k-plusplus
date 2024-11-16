@@ -101,7 +101,6 @@ void MainWindow::RangeUpdate(int value)
 
 void MainWindow::AnekdotUpdate()
 {
-    srand(time(0));
     int random_anek = rand()%anekdots.size();
     QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
     ui->AnekdotLabel->setText(NewAnekdot);
@@ -148,8 +147,8 @@ void MainWindow::on_pushButton_clicked()
         //обновляем прогресс бар
         QObject::connect(slave1, &Slave::ProgressUpdated, this, &MainWindow::updateProgress);
 
-        connect(slave1, &Slave::WorkStart, this, &MainWindow::BlockButtons);
-        connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons);
+        connect(slave1, &Slave::WorkStart, this, &MainWindow::BlockButtons); //блокировка кнопок на время выполнения потока
+        connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons); //разблокировка
 
         //обновляем анекдот
         connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
