@@ -30,9 +30,9 @@ Application::Application(int argc, const char **argv)
     po::store(po::parse_command_line(argc, argv, m_desc), m_vm); // парсим переданные аргументы
     po::notify(m_vm);   // записываем аргументы в переменные в программу
 
-    cout << "NSRL DB Path: " << m_inputDBPath << endl;
-    cout << "Scan Dir: " << m_scanDirPath << endl;
-    cout << "Output DB Path: " << m_outputDBPath << endl;
+    //cout << "NSRL DB Path: " << m_inputDBPath << endl;
+    //cout << "Scan Dir: " << m_scanDirPath << endl;
+    //cout << "Output DB Path: " << m_outputDBPath << endl;
     //cout << "Output DB Name: " << m_outputDBName << endl;
 }
 
@@ -64,8 +64,8 @@ int Application::exec()
 
     filesystem::path CorrectPath = m_scanDirPath;
     vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
-    NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath);                // Инициализация NSRL репозитория
-    OutputDB ourDatabase = OutputDB(m_outputDBPath); // Создание выходной базы данных
+    NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath.string());                // Инициализация NSRL репозитория
+    OutputDB ourDatabase = OutputDB(m_outputDBPath.string()); // Создание выходной базы данных
 
     int j = 0;
     for (int i = 0; i < filename.size(); i++)

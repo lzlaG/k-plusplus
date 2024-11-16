@@ -103,6 +103,10 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(k-pp-gui)
 endif()
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+	set_target_properties(k-pp-gui PROPERTIES WIN32_EXECUTABLE ON)
+endif()
+
 #отправляем в нужную директорию
 set_target_properties(k-pp-gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${GUI_OUTPUT_DIR})
 

@@ -25,7 +25,7 @@ void CalculateSHA1Hash(FilePtr file)
                                              new HexEncoder(
                                                  new StringSink(hash))));
         file->hash_sha1 = hash;
-        cout << "Хэш файла "+file->path+": " << hash << endl;
+        //cout << "Хэш файла "+file->path+": " << hash << endl;
     }
     catch (const exception &e)
     {

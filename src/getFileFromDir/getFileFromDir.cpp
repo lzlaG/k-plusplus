@@ -30,8 +30,8 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
                 file->path = filePath.string();
                 file->name = fileName.string();
                 result.push_back(file);
-                cout << "Считывание:" << file->path  <<
-                     " Файл номер: " << result.size() << endl;
+                //cout << "Считывание:" << file->path  <<
+                //     " Файл номер: " << result.size() << endl;
             }
         }
         catch (const filesystem_error &e)
