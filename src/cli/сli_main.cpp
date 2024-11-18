@@ -2,13 +2,13 @@
 #include <string>
 #include <vector>
 
-#include "application/application.h"
+#include "../application/application.h"
 
 using namespace std;
 
 /**
- * @file main.cpp
- * Инстализация приложения и запуск
+ * @file cli_main.cpp
+ * Инстализация приложения и запуск(cli версия)
  */
 int main(int argc, const char *argv[])
 {

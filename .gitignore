@@ -6,3 +6,5 @@ tests/output.db
 tmp
 doc
 .vscode
+CMakeLists.txt.user
+src/OurTabs.h
