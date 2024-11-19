@@ -125,6 +125,10 @@ void MainWindow::on_pushButton_clicked()
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
 
+        //очистка данных с прошлого запуска
+        KnownModel->clear();
+        UnknownModel->clear();
+
         QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
         QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
         Slave *slave1 =new Slave(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
