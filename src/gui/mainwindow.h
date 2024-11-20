@@ -29,7 +29,7 @@ private slots:
     void BlockButtons();
     void UnblockButtons();
 
-    void on_pushButton_2_clicked();
+    void on_searchButton_clicked();
 
 private:
     Ui::MainWindow *ui;

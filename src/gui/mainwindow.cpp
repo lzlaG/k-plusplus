@@ -63,6 +63,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //начальное значение лейбла анекдотов
     ui->AnekdotLabel->setText("");
 
+    //блокируем поиск файлов, пока не выполнится обработка
+    ui->searchButton->setDisabled(true);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->setDisabled(true);
 };
 
 MainWindow::~MainWindow()
@@ -115,12 +119,18 @@ void MainWindow::BlockButtons()
     ui->SetupDirButton->setEnabled(false);
     ui->SetupNsrlButton->setEnabled(false);
     ui->pushButton->setEnabled(false);
+    ui->searchButton->setEnabled(false);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->setDisabled(true);
 }
 void MainWindow::UnblockButtons()
 {
     ui->SetupDirButton->setEnabled(true);
     ui->SetupNsrlButton->setEnabled(true);
     ui->pushButton->setEnabled(true);
+    ui->searchButton->setEnabled(true);
+    ui->searchLine->setReadOnly(false);
+    ui->searchLine->setDisabled(false);
 }
 void MainWindow::on_pushButton_clicked()
 {
@@ -161,19 +171,15 @@ void MainWindow::on_pushButton_clicked()
         //обновляем анекдот
         connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
-
-        ui->SetupDirButton->setEnabled(true);
-        ui->SetupDirButton->setEnabled(true);
-        ui->pushButton->setEnabled(true);
     }
 }
 
-
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_searchButton_clicked()
 {
     // Прокси-модель с фильтрацией
     QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(KnownModel);
+    proxyModel->setFilterKeyColumn(-1);
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive); // Нечувствительность к регистру
     QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     KnownTable->setModel(proxyModel);

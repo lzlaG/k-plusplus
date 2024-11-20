@@ -60,9 +60,9 @@
    <widget class="QLineEdit" name="ScanDirLine">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>0</y>
-      <width>861</width>
+      <x>10</x>
+      <y>10</y>
+      <width>871</width>
       <height>21</height>
      </rect>
     </property>
@@ -70,10 +70,10 @@
    <widget class="QPushButton" name="SetupDirButton">
     <property name="geometry">
      <rect>
-      <x>900</x>
+      <x>890</x>
       <y>0</y>
       <width>161</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -84,19 +84,19 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>40</y>
       <width>871</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="SetupNsrlButton">
     <property name="geometry">
      <rect>
-      <x>900</x>
-      <y>30</y>
+      <x>890</x>
+      <y>40</y>
       <width>161</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
@@ -145,24 +145,24 @@
    <widget class="QLineEdit" name="searchLine">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>70</y>
-      <width>821</width>
-      <height>21</height>
+      <x>10</x>
+      <y>80</y>
+      <width>871</width>
+      <height>31</height>
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="searchButton">
     <property name="geometry">
      <rect>
       <x>890</x>
-      <y>70</y>
-      <width>211</width>
-      <height>61</height>
+      <y>80</y>
+      <width>161</width>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Поиск</string>
     </property>
    </widget>
   </widget>
