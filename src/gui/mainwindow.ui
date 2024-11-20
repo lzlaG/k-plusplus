@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>90</y>
+      <y>120</y>
       <width>1221</width>
-      <height>571</height>
+      <height>541</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -57,38 +57,12 @@
      </widget>
     </widget>
    </widget>
-   <widget class="QLabel" name="ScanLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>211</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Директория для сканирования:</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="NsrlLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>171</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Путь к NSRL базе данных:</string>
-    </property>
-   </widget>
    <widget class="QLineEdit" name="ScanDirLine">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>20</x>
       <y>0</y>
-      <width>811</width>
+      <width>861</width>
       <height>21</height>
      </rect>
     </property>
@@ -96,7 +70,7 @@
    <widget class="QPushButton" name="SetupDirButton">
     <property name="geometry">
      <rect>
-      <x>1040</x>
+      <x>900</x>
       <y>0</y>
       <width>161</width>
       <height>21</height>
@@ -109,9 +83,9 @@
    <widget class="QLineEdit" name="NsrlFileLine">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>10</x>
       <y>30</y>
-      <width>811</width>
+      <width>871</width>
       <height>21</height>
      </rect>
     </property>
@@ -119,7 +93,7 @@
    <widget class="QPushButton" name="SetupNsrlButton">
     <property name="geometry">
      <rect>
-      <x>1040</x>
+      <x>900</x>
       <y>30</y>
       <width>161</width>
       <height>21</height>
@@ -166,6 +140,29 @@
     </property>
     <property name="text">
      <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="searchLine">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>70</y>
+      <width>821</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>70</y>
+      <width>211</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PushButton</string>
     </property>
    </widget>
   </widget>

@@ -28,6 +28,9 @@ private slots:
     void AnekdotUpdate();
     void BlockButtons();
     void UnblockButtons();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
 protected:

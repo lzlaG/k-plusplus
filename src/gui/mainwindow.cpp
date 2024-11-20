@@ -12,7 +12,7 @@
 #include "../../lib/sqlite3/sqlite3.h"
 #include "slave.h"
 #include "anekdots.h"
-
+#include <QSortFilterProxyModel>
 
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
+
+    ui->ScanDirLine->setPlaceholderText("Укажите сканируемую директорию...");
+    ui->NsrlFileLine->setPlaceholderText("Укажите путь до NSRL БД...");
 
     //параметры моделей
     KnownModel->setColumnCount(3);
@@ -59,7 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //начальное значение лейбла анекдотов
     ui->AnekdotLabel->setText("");
-}
+
+};
 
 MainWindow::~MainWindow()
 {
@@ -162,5 +166,21 @@ void MainWindow::on_pushButton_clicked()
         ui->SetupDirButton->setEnabled(true);
         ui->pushButton->setEnabled(true);
     }
+}
+
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    // Прокси-модель с фильтрацией
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    proxyModel->setSourceModel(KnownModel);
+    proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive); // Нечувствительность к регистру
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    KnownTable->setModel(proxyModel);
+
+    QString text = ui->searchLine->text();
+    QRegularExpression regex(text, QRegularExpression::CaseInsensitiveOption);
+    proxyModel->setFilterRegularExpression(regex);
+    KnownTable->setModel(proxyModel);
 }
 
