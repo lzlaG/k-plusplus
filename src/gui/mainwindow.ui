@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="KnownTab">
      <attribute name="title">
@@ -33,10 +33,10 @@
      <widget class="QTreeView" name="KnownView">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>1201</width>
-        <height>521</height>
+        <x>0</x>
+        <y>0</y>
+        <width>1221</width>
+        <height>531</height>
        </rect>
       </property>
      </widget>
@@ -48,10 +48,10 @@
      <widget class="QTreeView" name="UnknownView">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>1201</width>
-        <height>521</height>
+        <x>0</x>
+        <y>0</y>
+        <width>1221</width>
+        <height>531</height>
        </rect>
       </property>
      </widget>

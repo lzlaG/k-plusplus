@@ -13,6 +13,7 @@
 #include "slave.h"
 #include "anekdots.h"
 #include <QSortFilterProxyModel>
+#include <QMessageBox>
 
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
@@ -32,12 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("k-pp gui");
     //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
 
     ui->ScanDirLine->setPlaceholderText("Укажите сканируемую директорию...");
     ui->NsrlFileLine->setPlaceholderText("Укажите путь до NSRL БД...");
+    ui->searchLine->setPlaceholderText("Введите имя, путь или хэш файла...");
 
     //параметры моделей
     KnownModel->setColumnCount(3);
@@ -136,6 +139,8 @@ void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
+        ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: white;}");
+        ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
 
@@ -171,6 +176,20 @@ void MainWindow::on_pushButton_clicked()
         //обновляем анекдот
         connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
+    }
+    else
+    {
+        if (NsrlFile.isEmpty() == true)
+        {
+            ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: red;}");
+        }
+        if (ScanDir.isEmpty() == true)
+        {
+            ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: red;}");
+        }
+        QMessageBox msgBox;
+        msgBox.setText("Ошибка! Проверьте, что директория для сканирования и путь до NSRL БД заданы корректно");
+        msgBox.exec();
     }
 }
 
