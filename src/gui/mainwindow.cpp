@@ -12,7 +12,8 @@
 #include "../../lib/sqlite3/sqlite3.h"
 #include "slave.h"
 #include "anekdots.h"
-
+#include <QSortFilterProxyModel>
+#include <QMessageBox>
 
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
@@ -32,9 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("k-pp gui");
     //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
+
+    ui->ScanDirLine->setPlaceholderText("Укажите сканируемую директорию...");
+    ui->NsrlFileLine->setPlaceholderText("Укажите путь до NSRL БД...");
+    ui->searchLine->setPlaceholderText("Введите имя, путь или хэш файла...");
 
     //параметры моделей
     KnownModel->setColumnCount(3);
@@ -59,7 +65,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //начальное значение лейбла анекдотов
     ui->AnekdotLabel->setText("");
-}
+
+    //блокируем поиск файлов, пока не выполнится обработка
+    ui->searchButton->setDisabled(true);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->setDisabled(true);
+};
 
 MainWindow::~MainWindow()
 {
@@ -111,19 +122,31 @@ void MainWindow::BlockButtons()
     ui->SetupDirButton->setEnabled(false);
     ui->SetupNsrlButton->setEnabled(false);
     ui->pushButton->setEnabled(false);
+    ui->searchButton->setEnabled(false);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->setDisabled(true);
 }
 void MainWindow::UnblockButtons()
 {
     ui->SetupDirButton->setEnabled(true);
     ui->SetupNsrlButton->setEnabled(true);
     ui->pushButton->setEnabled(true);
+    ui->searchButton->setEnabled(true);
+    ui->searchLine->setReadOnly(false);
+    ui->searchLine->setDisabled(false);
 }
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
     {
+        ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: white;}");
+        ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
+
+        //очистка данных с прошлого запуска
+        KnownModel->clear();
+        UnknownModel->clear();
 
         QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
         QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
@@ -153,10 +176,46 @@ void MainWindow::on_pushButton_clicked()
         //обновляем анекдот
         connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
-
-        ui->SetupDirButton->setEnabled(true);
-        ui->SetupDirButton->setEnabled(true);
-        ui->pushButton->setEnabled(true);
     }
+    else
+    {
+        if (NsrlFile.isEmpty() == true)
+        {
+            ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: red;}");
+        }
+        if (ScanDir.isEmpty() == true)
+        {
+            ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: red;}");
+        }
+        QMessageBox msgBox;
+        msgBox.setText("Ошибка! Проверьте, что директория для сканирования и путь до NSRL БД заданы корректно");
+        msgBox.exec();
+    }
+}
+
+void MainWindow::on_searchButton_clicked()
+{
+    //запрос
+    QString search_file = ui->searchLine->text();
+    QRegularExpression regex(search_file, QRegularExpression::CaseInsensitiveOption);
+
+    // Прокси-модель для поиска в таблице известных файлов
+    QSortFilterProxyModel *KnownProxyModel = new QSortFilterProxyModel(this);
+    KnownProxyModel->setSourceModel(KnownModel);
+    KnownProxyModel->setFilterKeyColumn(-1);
+    KnownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive); // Нечувствительность к регистру
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    KnownProxyModel->setFilterRegularExpression(regex);
+    KnownTable->setModel(KnownProxyModel);
+
+    //поиск в неизвестных файлах
+    QSortFilterProxyModel *UnknownProxyModel = new QSortFilterProxyModel(this);
+    UnknownProxyModel->setSourceModel(UnknownModel);
+    UnknownProxyModel->setFilterKeyColumn(-1);
+    UnknownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
+    UnknownProxyModel->setFilterRegularExpression(regex);
+    UnknownTable->setModel(UnknownProxyModel);
+    UnknownTable->setModel(UnknownProxyModel);
 }
 
