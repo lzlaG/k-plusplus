@@ -76,6 +76,11 @@ void Slave::GetDataFromDB(QString DB_path)
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
         UnknownModel->appendRow(QueryResult);
     }
+
+    KnownModel->setColumnCount(3);
+    UnknownModel->setColumnCount(3);
+    KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
     sqlite3_finalize(stmt);
     emit ModelsReady(KnownModel, UnknownModel);
 }

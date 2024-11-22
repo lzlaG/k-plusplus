@@ -56,10 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
     KnownTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     UnknownTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-    // задаем модели для таблиц
-    //KnownTable->setModel(KnownModel);
-    //UnknownTable->setModel(UnknownModel);
-
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
 
