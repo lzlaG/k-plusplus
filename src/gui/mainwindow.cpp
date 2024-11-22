@@ -43,10 +43,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchLine->setPlaceholderText("Введите имя, путь или хэш файла...");
 
     //параметры моделей
-    KnownModel->setColumnCount(3);
-    UnknownModel->setColumnCount(3);
-    KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
-    UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    //KnownModel->setColumnCount(3);
+    //UnknownModel->setColumnCount(3);
+    //KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    //UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
 
     //достаем таблицы из вкладок
     QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
@@ -57,8 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     UnknownTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // задаем модели для таблиц
-    KnownTable->setModel(KnownModel);
-    UnknownTable->setModel(UnknownModel);
+    //KnownTable->setModel(KnownModel);
+    //UnknownTable->setModel(UnknownModel);
 
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
@@ -135,6 +135,14 @@ void MainWindow::UnblockButtons()
     ui->searchLine->setReadOnly(false);
     ui->searchLine->setDisabled(false);
 }
+
+void MainWindow::handleModel(QStandardItemModel *model)
+{
+    QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
+    QTreeView *knownview = getTreeViewFromTab(ui->tabWidget, 0);
+    unknownview->setModel(model);
+    knownview->setModel(model);
+}
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
@@ -145,12 +153,10 @@ void MainWindow::on_pushButton_clicked()
         ui->progressBar->setValue(0);
 
         //очистка данных с прошлого запуска
-        KnownModel->clear();
-        UnknownModel->clear();
+        //KnownModel->clear();
+        //UnknownModel->clear();
 
-        QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
-        QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
-        Slave *slave1 =new Slave(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
+        Slave *slave1 =new Slave(ScanDir, NsrlFile);
         //инициализируем поток и перемещаем туда объект
         Thread = new QThread(this);
         slave1->moveToThread(Thread);
@@ -162,7 +168,10 @@ void MainWindow::on_pushButton_clicked()
         // сигналы для правильного завершения потоков
         QObject::connect(slave1, &Slave::finished, Thread, &QThread::quit);
         QObject::connect(slave1, &Slave::finished, slave1, &Slave::deleteLater);
-        QObject::connect(Thread, &QThread::finished, Thread, &QThread::deleteLater);
+        QObject::connect(Thread, &QThread::finished, slave1, &Slave::deleteLater);
+
+        //передаем модель
+        QObject::connect(slave1, &Slave::modelReady, this, &MainWindow::handleModel);
 
         //задаем обновить диапазон прогрессбара(когда испустится сигнал)
         QObject::connect(slave1, &Slave::ChangeRange, this, &MainWindow::RangeUpdate);
@@ -195,6 +204,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchButton_clicked()
 {
+    /*
     //запрос
     QString search_file = ui->searchLine->text();
     QRegularExpression regex(search_file, QRegularExpression::CaseInsensitiveOption);
@@ -216,6 +226,6 @@ void MainWindow::on_searchButton_clicked()
     QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
     UnknownProxyModel->setFilterRegularExpression(regex);
     UnknownTable->setModel(UnknownProxyModel);
-    UnknownTable->setModel(UnknownProxyModel);
+    UnknownTable->setModel(UnknownProxyModel);*/
 }
 

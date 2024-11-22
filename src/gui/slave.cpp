@@ -41,7 +41,7 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     return PathToDB;
 }
 
-void Slave::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, const char* queryStr, QString DB_path)
+void Slave::FillTreeView(const char* queryStr, QString DB_path)
 {
     sqlite3 *DB;
     sqlite3_open(DB_path.toUtf8().constData(), &DB);
@@ -51,6 +51,7 @@ void Slave::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, c
         return;
     }
 
+    QStandardItemModel *neededmodel = new QStandardItemModel();
     // Итерация по строкам результата
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         QList<QStandardItem*> QueryResult;
@@ -60,17 +61,19 @@ void Slave::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, c
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
 
-        neededModel->appendRow(QueryResult);
+        neededmodel->appendRow(QueryResult);
     }
-    treeView->setModel(neededModel);
+    //treeView->setModel(neededModel);
+
     sqlite3_finalize(stmt); // Завершение запроса
+    emit modelReady(neededmodel);
 }
 
 void Slave::doWork()
 {
     emit WorkStart();
     QString OMEGAPATH = ReadFiles(NsrlFile, ScanDir);
-    FillTreeView(KnownView, KnownModel, "SELECT * FROM KNOWN_FILES;", OMEGAPATH);
-    FillTreeView(UnknownView, UnknownModel, "SELECT * FROM UNKNOWN_FILES;", OMEGAPATH);
+    FillTreeView("SELECT * FROM KNOWN_FILES;", OMEGAPATH);
+    FillTreeView( "SELECT * FROM UNKNOWN_FILES;", OMEGAPATH);
     emit finished();
 }

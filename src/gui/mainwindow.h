@@ -28,14 +28,14 @@ private slots:
     void AnekdotUpdate();
     void BlockButtons();
     void UnblockButtons();
-
     void on_searchButton_clicked();
+    void handleModel(QStandardItemModel *model);// Устанавливаем модель в QTreeView
 
 private:
     Ui::MainWindow *ui;
 protected:
-    QStandardItemModel *KnownModel = new QStandardItemModel(this);
-    QStandardItemModel *UnknownModel = new QStandardItemModel(this);
+    //QStandardItemModel *KnownModel = new QStandardItemModel(this);
+    //QStandardItemModel *UnknownModel = new QStandardItemModel(this);
     QString ScanDir;
     QString NsrlFile;
     QThread *Thread;
