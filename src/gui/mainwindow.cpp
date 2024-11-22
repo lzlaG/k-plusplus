@@ -42,12 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->NsrlFileLine->setPlaceholderText("Укажите путь до NSRL БД...");
     ui->searchLine->setPlaceholderText("Введите имя, путь или хэш файла...");
 
-    //параметры моделей
-    //KnownModel->setColumnCount(3);
-    //UnknownModel->setColumnCount(3);
-    //KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
-    //UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
-
     //достаем таблицы из вкладок
     QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
@@ -152,10 +146,6 @@ void MainWindow::on_pushButton_clicked()
         ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
-
-        //очистка данных с прошлого запуска
-        //KnownModel->clear();
-        //UnknownModel->clear();
 
         Slave *slave1 =new Slave(ScanDir, NsrlFile);
         //инициализируем поток и перемещаем туда объект
