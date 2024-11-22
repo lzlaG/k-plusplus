@@ -140,6 +140,10 @@ void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *mod
 {
     QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
     QTreeView *knownview = getTreeViewFromTab(ui->tabWidget, 0);
+    model1->setParent(nullptr);
+    model2->setParent(nullptr);
+    originalKnownModel = model1;
+    originalUnknownModel = model2;
     knownview->setModel(model1);
     unknownview->setModel(model2);
 }
@@ -205,28 +209,28 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchButton_clicked()
 {
-    /*
+    //таблицы
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
+
     //запрос
     QString search_file = ui->searchLine->text();
     QRegularExpression regex(search_file, QRegularExpression::CaseInsensitiveOption);
 
     // Прокси-модель для поиска в таблице известных файлов
     QSortFilterProxyModel *KnownProxyModel = new QSortFilterProxyModel(this);
-    KnownProxyModel->setSourceModel(KnownModel);
+    KnownProxyModel->setSourceModel(originalKnownModel);
     KnownProxyModel->setFilterKeyColumn(-1);
     KnownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive); // Нечувствительность к регистру
-    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     KnownProxyModel->setFilterRegularExpression(regex);
     KnownTable->setModel(KnownProxyModel);
 
     //поиск в неизвестных файлах
     QSortFilterProxyModel *UnknownProxyModel = new QSortFilterProxyModel(this);
-    UnknownProxyModel->setSourceModel(UnknownModel);
+    UnknownProxyModel->setSourceModel(originalUnknownModel);
     UnknownProxyModel->setFilterKeyColumn(-1);
     UnknownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
     UnknownProxyModel->setFilterRegularExpression(regex);
     UnknownTable->setModel(UnknownProxyModel);
-    UnknownTable->setModel(UnknownProxyModel);*/
 }
 

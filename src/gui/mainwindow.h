@@ -33,9 +33,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QStandardItemModel *originalKnownModel = new QStandardItemModel();
+    QStandardItemModel *originalUnknownModel = new QStandardItemModel();
 protected:
-    //QStandardItemModel *KnownModel = new QStandardItemModel(this);
-    //QStandardItemModel *UnknownModel = new QStandardItemModel(this);
     QString ScanDir;
     QString NsrlFile;
     QThread *Thread;
