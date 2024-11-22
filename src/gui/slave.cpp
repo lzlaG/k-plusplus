@@ -41,39 +41,49 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     return PathToDB;
 }
 
-void Slave::FillTreeView(const char* queryStr, QString DB_path)
+void Slave::GetDataFromDB(QString DB_path)
 {
     sqlite3 *DB;
     sqlite3_open(DB_path.toUtf8().constData(), &DB);
     sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(DB, queryStr, -1, &stmt, nullptr) != SQLITE_OK) {
-        qDebug() << "Ошибка подготовки запроса:" << sqlite3_errmsg(DB);
+    const char * KnownQuery = "SELECT * FROM KNOWN_FILES;";
+    if (sqlite3_prepare_v2(DB, KnownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        qDebug() << "Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
         return;
     }
-
-    QStandardItemModel *neededmodel = new QStandardItemModel();
+    QStandardItemModel *KnownModel= new QStandardItemModel();
     // Итерация по строкам результата
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         QList<QStandardItem*> QueryResult;
-
         // Чтение данных из каждой колонки
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)))); // Колонка 1
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
-
-        neededmodel->appendRow(QueryResult);
+        KnownModel->appendRow(QueryResult);
     }
-    //treeView->setModel(neededModel);
-
-    sqlite3_finalize(stmt); // Завершение запроса
-    emit modelReady(neededmodel);
+    sqlite3_finalize(stmt); // Завершение запроса   по итоговым файлам
+    const char * UnknownQuery = "SELECT * FROM UNKNOWN_FILES;";
+    if (sqlite3_prepare_v2(DB, UnknownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        qDebug() << "Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+        return;
+    }
+    QStandardItemModel *UnknownModel = new QStandardItemModel();
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        QList<QStandardItem*> QueryResult;
+        // Чтение данных из каждой колонки
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)))); // Колонка 1
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
+        UnknownModel->appendRow(QueryResult);
+    }
+    sqlite3_finalize(stmt);
+    emit ModelsReady(KnownModel, UnknownModel);
 }
 
 void Slave::doWork()
 {
     emit WorkStart();
-    QString OMEGAPATH = ReadFiles(NsrlFile, ScanDir);
-    FillTreeView("SELECT * FROM KNOWN_FILES;", OMEGAPATH);
-    FillTreeView( "SELECT * FROM UNKNOWN_FILES;", OMEGAPATH);
+    QString DBPATH = ReadFiles(NsrlFile, ScanDir);
+    GetDataFromDB(DBPATH);
     emit finished();
 }

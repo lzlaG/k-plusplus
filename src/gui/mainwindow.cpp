@@ -136,13 +136,14 @@ void MainWindow::UnblockButtons()
     ui->searchLine->setDisabled(false);
 }
 
-void MainWindow::handleModel(QStandardItemModel *model)
+void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *model2)
 {
     QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
     QTreeView *knownview = getTreeViewFromTab(ui->tabWidget, 0);
-    unknownview->setModel(model);
-    knownview->setModel(model);
+    knownview->setModel(model1);
+    unknownview->setModel(model2);
 }
+
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
@@ -171,7 +172,7 @@ void MainWindow::on_pushButton_clicked()
         QObject::connect(Thread, &QThread::finished, slave1, &Slave::deleteLater);
 
         //передаем модель
-        QObject::connect(slave1, &Slave::modelReady, this, &MainWindow::handleModel);
+        QObject::connect(slave1, &Slave::ModelsReady, this, &MainWindow::handleModels);
 
         //задаем обновить диапазон прогрессбара(когда испустится сигнал)
         QObject::connect(slave1, &Slave::ChangeRange, this, &MainWindow::RangeUpdate);

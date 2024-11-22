@@ -22,8 +22,7 @@ private:
     QString ScanDir;
     QString NsrlFile;
     QString ReadFiles(QString NsrlFile, QString ScanDir);
-    void FillTreeView(const char* queryStr,
-                      QString DB_path);
+    void GetDataFromDB(QString DB_path);
 public slots:
     void doWork();
 signals:
@@ -32,7 +31,7 @@ signals:
     int ChangeRange(int value);
     void AnekdotTime();
     void WorkStart();
-    void modelReady(QStandardItemModel* model);
+    void ModelsReady(QStandardItemModel* model1, QStandardItemModel *model2);
 };
 
 #endif // SLAVE_H

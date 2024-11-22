@@ -29,7 +29,7 @@ private slots:
     void BlockButtons();
     void UnblockButtons();
     void on_searchButton_clicked();
-    void handleModel(QStandardItemModel *model);// Устанавливаем модель в QTreeView
+    void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
 
 private:
     Ui::MainWindow *ui;
