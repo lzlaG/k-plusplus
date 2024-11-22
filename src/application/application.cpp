@@ -36,6 +36,12 @@ Application::Application(int argc, const char **argv)
     //cout << "Output DB Name: " << m_outputDBName << endl;
 }
 
+wstring options_to_wstring(const po::options_description& desc) {
+    ostringstream oss;
+    oss << desc; // Описание параметров записывается в строковый поток
+    return wstring_convert<codecvt_utf8<wchar_t>>().from_bytes(oss.str());
+}
+
 /**
  * Запуск приложения
  */
@@ -51,7 +57,7 @@ int Application::exec()
     if (m_vm.count("help"))
     {
         // То выводим описание меню
-        m_desc.print(cout);
+        wcout << options_to_wstring(m_desc) << endl;
         return 1;
     }
 
