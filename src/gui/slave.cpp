@@ -48,7 +48,7 @@ void Slave::GetDataFromDB(QString DB_path)
     sqlite3_stmt* stmt;
     const char * KnownQuery = "SELECT * FROM KNOWN_FILES;";
     if (sqlite3_prepare_v2(DB, KnownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
-        qDebug() << "Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
         return;
     }
     QStandardItemModel *KnownModel= new QStandardItemModel();
@@ -64,7 +64,7 @@ void Slave::GetDataFromDB(QString DB_path)
     sqlite3_finalize(stmt); // Завершение запроса   по итоговым файлам
     const char * UnknownQuery = "SELECT * FROM UNKNOWN_FILES;";
     if (sqlite3_prepare_v2(DB, UnknownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
-        qDebug() << "Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
         return;
     }
     QStandardItemModel *UnknownModel = new QStandardItemModel();
