@@ -21,10 +21,12 @@ using namespace std;
  * @param [in] argv отправленные параметры
  */
 
-void Application::GetMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo) {
+void Application::GetMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
+        cout << "Insert file number: " << i << " into output db" << endl;
+        ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
     }
 }
 
@@ -110,7 +112,7 @@ int Application::exec()
         for (int t = 0; t < numThreads; ++t) {
                 int start = t * filesPerThread;
                 int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
-                threads.emplace_back(GetMultiHashes, ref(filename), start, end, ref(nsrlRepo));
+                threads.emplace_back(GetMultiHashes, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
         }
 
         // Ожидание завершения всех потоков
@@ -118,11 +120,11 @@ int Application::exec()
             t.join();
         }
 
-        for (int i = 0; i<filename.size(); i++)
-        {
-            cout << "Insert file number: " << i << " into output db" << endl;
-            ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        }
+        //for (int i = 0; i<filename.size(); i++)
+        //{
+        //    cout << "Insert file number: " << i << " into output db" << endl;
+        //    ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
+        //}
 
         /*
         for (int i = 0; i < filename.size(); i++)
