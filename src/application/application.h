@@ -7,6 +7,8 @@
 
 #include <boost/program_options.hpp>
 #include <filesystem>
+#include "../../models/fileSchema.h"
+#include "../nsrlRepository/nsrlRepository.h"
 
 namespace po = boost::program_options;
 
@@ -31,6 +33,7 @@ private:
     std::string m_scanDirPath;      // Путь для сканирования
     filesystem::path m_outputDBPath;     // Путь для создания бд для ответа
     //string m_outputDBName = "output.db"; // Название созданной бд
+    static void GetMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo);
 };
 
 #endif // MENU_EAPPLICATION_H

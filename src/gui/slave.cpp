@@ -8,8 +8,16 @@
 #include "../OutputDB/outputDB.h"
 #include "../getFileFromDir/getFileFromDir.h"
 #include "../calculateShaHash/calculateShaHash.h"
-#include <future>
 #include <QDateTime>
+#include <thread>
+#include <vector>
+
+void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo) {
+    for (int i = start; i < end; ++i) {
+        CalculateSHA1Hash(files[i]);         // Подсчет хэша
+        nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
+    }
+}
 
 QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 {
@@ -23,21 +31,28 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
     emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
 
-    for (int i = 0; i < filename.size(); i++)
-    {
-        if (i%70 == 0)
-        {
-            emit AnekdotTime();
-        };
-        future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
-                                { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
-        a1.wait();
-        future<void> a2 = async([&nsrlRepo, filename, i]
-                                { nsrlRepo.IsHashInDB(filename[i]); });
-        a2.wait();
-        ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        emit ProgressUpdated(i+1);
+    int numThreads = 3; // Число потоков
+    int totalFiles = filename.size(); // количество файлов
+    int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
+    std::vector<std::thread> threads;
+
+    for (int t = 0; t < numThreads; ++t) {
+            int start = t * filesPerThread;
+            int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
+            threads.emplace_back(Slave::GuiMultiHashes, ref(filename), start, end, ref(nsrlRepo));
     }
+
+    // Ожидание завершения всех потоков
+    for (auto& t : threads) {
+        t.join();
+    }
+
+    for (int i = 0; i<filename.size(); i++)
+    {
+        cout << "Insert file number: " << i << " into output db" << endl;
+        ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
+    }
+
     return PathToDB;
 }
 

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <future>
+#include <algorithm>
+#include <thread>
 
 #include "../nsrlRepository/nsrlRepository.h"
 #include "../getFileFromDir/getFileFromDir.h"
@@ -18,6 +20,14 @@ using namespace std;
  * @param [in] argc количество отправленных параметров
  * @param [in] argv отправленные параметры
  */
+
+void Application::GetMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo) {
+    for (int i = start; i < end; ++i) {
+        CalculateSHA1Hash(files[i]);         // Подсчет хэша
+        nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
+    }
+}
+
 Application::Application(int argc, const char **argv)
 {
     // Добавляем пункты меню
@@ -91,6 +101,30 @@ int Application::exec()
         OutputDB ourDatabase = OutputDB(m_outputDBPath.string()); // Создание выходной базы данных
 
         int j = 0;
+
+        int numThreads = 3; // Число потоков
+        int totalFiles = filename.size(); // количество файлов
+        int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
+        vector<thread> threads;
+
+        for (int t = 0; t < numThreads; ++t) {
+                int start = t * filesPerThread;
+                int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
+                threads.emplace_back(GetMultiHashes, ref(filename), start, end, ref(nsrlRepo));
+        }
+
+        // Ожидание завершения всех потоков
+        for (auto& t : threads) {
+            t.join();
+        }
+
+        for (int i = 0; i<filename.size(); i++)
+        {
+            cout << "Insert file number: " << i << " into output db" << endl;
+            ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
+        }
+
+        /*
         for (int i = 0; i < filename.size(); i++)
         {
 
@@ -101,7 +135,7 @@ int Application::exec()
                                 { nsrlRepo.IsHashInDB(filename[i]); });
             a2.wait();
             ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        }
+        }*/
 
         filename.clear();
         return 0;
