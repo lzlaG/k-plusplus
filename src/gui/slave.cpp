@@ -19,6 +19,7 @@ void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepos
         //cout << "Insert file number: " << i << " into output db" << endl;
         ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
         //cout << "File number: " << i << endl;
+        emit ProgressUpdated(1);
     }
 }
 
@@ -37,6 +38,7 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 
     int numThreads = 3; // Число потоков
     int totalFiles = filename.size(); // количество файлов
+    emit ChangeRange(totalFiles);
     cout << "Amount of files in scan dir: " << totalFiles << endl;
     int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
     std::vector<std::thread> threads;
@@ -45,7 +47,7 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
             int start = t * filesPerThread;
             int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
             cout << "Thread " << t << " start: " << start << " End: " << end << endl;
-            threads.emplace_back(Slave::GuiMultiHashes, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
+            threads.emplace_back(&Slave::GuiMultiHashes, this, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
     }
 
     // Ожидание завершения всех потоков

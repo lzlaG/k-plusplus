@@ -92,7 +92,7 @@ void MainWindow::on_SetupNsrlButton_clicked()
 }
 
 void MainWindow::updateProgress(int value) {
-    ui->progressBar->setValue(value);  // Обновление значения прогресс-бара
+    ui->progressBar->setValue(ui->progressBar->value()+value);  // Обновление значения прогресс-бара
 };
 
 void MainWindow::RangeUpdate(int value)
