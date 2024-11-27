@@ -15,7 +15,7 @@ class NSRLRepository
 {
 private:
     sqlite3 *Database;
-
+    const char *query = "SELECT EXISTS(SELECT 1 FROM FILE WHERE sha1 = ?";
     static int callback(void *count, int argc, char **argv, char **azColName)
     {
         int *c = (int *)count;
