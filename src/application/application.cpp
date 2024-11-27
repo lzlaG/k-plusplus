@@ -84,7 +84,6 @@ int Application::exec()
     {
         wcout << L"Параметр nsrl-db-path не введён." << endl;
         nsrl_check = false;
-        //m_inputDBPath = "../src/nsrlRepository/test.db";
         return -1;
     }
 
@@ -99,6 +98,7 @@ int Application::exec()
     {
         filesystem::path CorrectPath = m_scanDirPath;
         vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
+        cout << "Amount of files in scan dir: " << filename.size() << endl;
         NSRLRepository nsrlRepo = NSRLRepository(m_inputDBPath.string());                // Инициализация NSRL репозитория
         OutputDB ourDatabase = OutputDB(m_outputDBPath.string()); // Создание выходной базы данных
 
@@ -112,6 +112,7 @@ int Application::exec()
         for (int t = 0; t < numThreads; ++t) {
                 int start = t * filesPerThread;
                 int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
+                cout << "Thread " << t << " start: " << start << " End: " << end << endl;
                 threads.emplace_back(GetMultiHashes, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
         }
 
@@ -119,25 +120,6 @@ int Application::exec()
         for (auto& t : threads) {
             t.join();
         }
-
-        //for (int i = 0; i<filename.size(); i++)
-        //{
-        //    cout << "Insert file number: " << i << " into output db" << endl;
-        //    ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        //}
-
-        /*
-        for (int i = 0; i < filename.size(); i++)
-        {
-
-            future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
-                                { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
-            a1.wait();
-            future<void> a2 = async([&nsrlRepo, filename, i]
-                                { nsrlRepo.IsHashInDB(filename[i]); });
-            a2.wait();
-            ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        }*/
 
         filename.clear();
         return 0;

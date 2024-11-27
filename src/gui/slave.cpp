@@ -12,10 +12,13 @@
 #include <thread>
 #include <vector>
 
-void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo) {
+void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
+        //cout << "Insert file number: " << i << " into output db" << endl;
+        ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
+        //cout << "File number: " << i << endl;
     }
 }
 
@@ -26,33 +29,29 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
             QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss")+".db"; //уникальное имя для бд
     std::filesystem::path ScanDirCorrect = ScanDir.toStdString();
     filesystem::path CorrectPath = ScanDirCorrect;
-    vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
+    vector<FilePtr> filename = getFileFromDir(CorrectPath);   // Рекурсивный обход указанной директории
+    cout << "Amount of files in scan dir: " << filename.size() << endl;
     NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория
     OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
     emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
 
     int numThreads = 3; // Число потоков
     int totalFiles = filename.size(); // количество файлов
+    cout << "Amount of files in scan dir: " << totalFiles << endl;
     int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
     std::vector<std::thread> threads;
 
     for (int t = 0; t < numThreads; ++t) {
             int start = t * filesPerThread;
             int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
-            threads.emplace_back(Slave::GuiMultiHashes, ref(filename), start, end, ref(nsrlRepo));
+            cout << "Thread " << t << " start: " << start << " End: " << end << endl;
+            threads.emplace_back(Slave::GuiMultiHashes, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
     }
 
     // Ожидание завершения всех потоков
     for (auto& t : threads) {
         t.join();
     }
-
-    for (int i = 0; i<filename.size(); i++)
-    {
-        cout << "Insert file number: " << i << " into output db" << endl;
-        ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-    }
-
     return PathToDB;
 }
 

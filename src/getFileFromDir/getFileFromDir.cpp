@@ -40,6 +40,7 @@ void getFilesFromDirRecursive(const filesystem::path &path, vector<FilePtr> &res
                     // Защита добавления в result с помощью мьютекса
                     lock_guard<mutex> lock(resultMutex);
                     result.push_back(file);
+                    //cout << "Reading file in sub directory\n File:"+file->path+" Current size of result: " << result.size() << endl;
                 }
                 else if (dirEntry.is_directory())
                 {
@@ -77,16 +78,17 @@ vector<FilePtr> getFileFromDir(filesystem::path path)
     {
         for (const auto &dirEntry : directory_iterator(path, directory_options::skip_permission_denied))
         {
-            if (dirEntry.is_directory())
+            if (dirEntry.is_directory()) // если директория, то добавляем в вектор с поддиректориями
             {
                 subDirectories.push_back(dirEntry.path());
             }
-            else if (dirEntry.is_regular_file())
+            else if (dirEntry.is_regular_file()) // если файл, то сразу добавляем в результирующий вектор
             {
                 auto file = new File();
                 file->path = dirEntry.path().string();
                 file->name = dirEntry.path().filename().string();
                 result.push_back(file);
+                //cout << "Top level of scan dir\n File"+file->path+" Current size of result: " << result.size() << endl;
             }
         }
     }

@@ -8,6 +8,7 @@
 #include <QCoreApplication>
 #include "../../models/fileSchema.h"
 #include "../nsrlRepository/nsrlRepository.h"
+#include "../OutputDB/outputDB.h"
 
 class Slave : public QObject
 {
@@ -25,7 +26,7 @@ private:
     QString NsrlFile;
     QString ReadFiles(QString NsrlFile, QString ScanDir);
     void GetDataFromDB(QString DB_path);
-    static void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo);
+    static void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase);
 public slots:
     void doWork();
 signals:
