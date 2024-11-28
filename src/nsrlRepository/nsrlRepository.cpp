@@ -36,12 +36,12 @@ void NSRLRepository::IsHashInDB(FilePtr file)
     */
 
     int execResult = sqlite3_prepare_v2(Database,
-                                        query, // запрос
+                                        ("SELECT EXISTS (SELECT 1 FROM FILE WHERE sha1 = \"" + file->hash_sha1 + "\"); ").c_str(), // запрос
                                         -1,                                                                                        // длина SQL-запроса в символах
                                         &pStatement,
                                         NULL);
 
-    execResult = sqlite3_bind_text(pStatement, 1, file->hash_sha1.c_str(), -1, SQLITE_TRANSIENT);
+    //execResult = sqlite3_bind_text(pStatement, 1, file->hash_sha1.c_str(), -1, SQLITE_TRANSIENT);
     execResult = sqlite3_step(pStatement);
     int n = 0;
     if (execResult == SQLITE_ROW)

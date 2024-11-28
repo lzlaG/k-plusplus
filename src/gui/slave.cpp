@@ -39,7 +39,7 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
     emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
 
-    int numThreads = 3; // Число потоков
+    int numThreads = std::thread::hardware_concurrency()-2; // Число потоков
     int totalFiles = filename.size(); // количество файлов
     emit ChangeRange(totalFiles);
     cout << "Amount of files in scan dir: " << totalFiles << endl;

@@ -104,7 +104,7 @@ int Application::exec()
 
         int j = 0;
 
-        int numThreads = 3; // Число потоков
+        int numThreads = std::thread::hardware_concurrency()-2;; // Число потоков
         int totalFiles = filename.size(); // количество файлов
         int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
         vector<thread> threads;
