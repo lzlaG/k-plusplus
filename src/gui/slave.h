@@ -33,7 +33,7 @@ signals:
     void finished();
     int ProgressUpdated(int value);
     int ChangeRange(int value);
-    void AnekdotTime();
+    //void AnekdotTime();
     void WorkStart();
     void ModelsReady(QStandardItemModel* model1, QStandardItemModel *model2);
 };

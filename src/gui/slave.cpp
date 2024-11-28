@@ -20,9 +20,9 @@ void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepos
         ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
         //cout << "File number: " << i << endl;
         emit ProgressUpdated(1);
-        if (i % 80 == 0) {
-            emit AnekdotTime();
-        }
+        //if (i % 80 == 0) {
+        //    emit AnekdotTime();
+        //}
     }
 }
 

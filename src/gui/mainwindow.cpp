@@ -100,12 +100,12 @@ void MainWindow::RangeUpdate(int value)
     ui->progressBar->setRange(0, value);
 };
 
-void MainWindow::AnekdotUpdate()
-{
-    int random_anek = rand()%anekdots.size();
-    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
-    ui->AnekdotLabel->setText(NewAnekdot);
-}
+//void MainWindow::AnekdotUpdate()
+//{
+//    int random_anek = rand()%anekdots.size();
+//    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
+//    ui->AnekdotLabel->setText(NewAnekdot);
+//}
 
 void MainWindow::BlockButtons()
 {
@@ -174,7 +174,7 @@ void MainWindow::on_pushButton_clicked()
         connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons); //разблокировка
 
         //обновляем анекдот
-        connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
+        //connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
     }
     else
@@ -218,5 +218,16 @@ void MainWindow::on_searchButton_clicked()
     UnknownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     UnknownProxyModel->setFilterRegularExpression(regex);
     UnknownTable->setModel(UnknownProxyModel);
+}
+
+
+void MainWindow::on_progressBar_valueChanged(int value)
+{
+    if (value % 100 == 0)
+    {
+        int random_anek = rand() % anekdots.size(); // Получаем случайный индекс
+        QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
+        ui->AnekdotLabel->setText(NewAnekdot); // Устанавливаем новый текст
+    }
 }
 
