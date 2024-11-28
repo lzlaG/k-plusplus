@@ -42,12 +42,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->NsrlFileLine->setPlaceholderText("Укажите путь до NSRL БД...");
     ui->searchLine->setPlaceholderText("Введите имя, путь или хэш файла...");
 
-    //параметры моделей
-    KnownModel->setColumnCount(3);
-    UnknownModel->setColumnCount(3);
-    KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
-    UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
-
     //достаем таблицы из вкладок
     QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
@@ -55,10 +49,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //делаем таблицы не редактируемыми
     KnownTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     UnknownTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    // задаем модели для таблиц
-    KnownTable->setModel(KnownModel);
-    UnknownTable->setModel(UnknownModel);
 
     //начальное значение прогресс бара
     ui->progressBar->setValue(0);
@@ -102,7 +92,7 @@ void MainWindow::on_SetupNsrlButton_clicked()
 }
 
 void MainWindow::updateProgress(int value) {
-    ui->progressBar->setValue(value);  // Обновление значения прогресс-бара
+    ui->progressBar->setValue(ui->progressBar->value()+value);  // Обновление значения прогресс-бара
 };
 
 void MainWindow::RangeUpdate(int value)
@@ -110,12 +100,12 @@ void MainWindow::RangeUpdate(int value)
     ui->progressBar->setRange(0, value);
 };
 
-void MainWindow::AnekdotUpdate()
-{
-    int random_anek = rand()%anekdots.size();
-    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
-    ui->AnekdotLabel->setText(NewAnekdot);
-}
+//void MainWindow::AnekdotUpdate()
+//{
+//    int random_anek = rand()%anekdots.size();
+//    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
+//    ui->AnekdotLabel->setText(NewAnekdot);
+//}
 
 void MainWindow::BlockButtons()
 {
@@ -135,6 +125,19 @@ void MainWindow::UnblockButtons()
     ui->searchLine->setReadOnly(false);
     ui->searchLine->setDisabled(false);
 }
+
+void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *model2)
+{
+    QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
+    QTreeView *knownview = getTreeViewFromTab(ui->tabWidget, 0);
+    model1->setParent(nullptr);
+    model2->setParent(nullptr);
+    originalKnownModel = model1;
+    originalUnknownModel = model2;
+    knownview->setModel(model1);
+    unknownview->setModel(model2);
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
@@ -144,13 +147,7 @@ void MainWindow::on_pushButton_clicked()
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
 
-        //очистка данных с прошлого запуска
-        KnownModel->clear();
-        UnknownModel->clear();
-
-        QTreeView *unknownview = getTreeViewFromTab(ui->tabWidget, 1);
-        QTreeView *knownview = getTreeViewFromTab(ui->tabWidget,0);
-        Slave *slave1 =new Slave(ScanDir, NsrlFile, KnownModel, UnknownModel, knownview, unknownview);
+        Slave *slave1 =new Slave(ScanDir, NsrlFile);
         //инициализируем поток и перемещаем туда объект
         Thread = new QThread(this);
         slave1->moveToThread(Thread);
@@ -162,7 +159,10 @@ void MainWindow::on_pushButton_clicked()
         // сигналы для правильного завершения потоков
         QObject::connect(slave1, &Slave::finished, Thread, &QThread::quit);
         QObject::connect(slave1, &Slave::finished, slave1, &Slave::deleteLater);
-        QObject::connect(Thread, &QThread::finished, Thread, &QThread::deleteLater);
+        QObject::connect(Thread, &QThread::finished, slave1, &Slave::deleteLater);
+
+        //передаем модель
+        QObject::connect(slave1, &Slave::ModelsReady, this, &MainWindow::handleModels);
 
         //задаем обновить диапазон прогрессбара(когда испустится сигнал)
         QObject::connect(slave1, &Slave::ChangeRange, this, &MainWindow::RangeUpdate);
@@ -174,7 +174,7 @@ void MainWindow::on_pushButton_clicked()
         connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons); //разблокировка
 
         //обновляем анекдот
-        connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
+        //connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
     }
     else
@@ -195,27 +195,39 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchButton_clicked()
 {
+    //таблицы
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
+
     //запрос
     QString search_file = ui->searchLine->text();
     QRegularExpression regex(search_file, QRegularExpression::CaseInsensitiveOption);
 
     // Прокси-модель для поиска в таблице известных файлов
     QSortFilterProxyModel *KnownProxyModel = new QSortFilterProxyModel(this);
-    KnownProxyModel->setSourceModel(KnownModel);
+    KnownProxyModel->setSourceModel(originalKnownModel);
     KnownProxyModel->setFilterKeyColumn(-1);
     KnownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive); // Нечувствительность к регистру
-    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     KnownProxyModel->setFilterRegularExpression(regex);
     KnownTable->setModel(KnownProxyModel);
 
     //поиск в неизвестных файлах
     QSortFilterProxyModel *UnknownProxyModel = new QSortFilterProxyModel(this);
-    UnknownProxyModel->setSourceModel(UnknownModel);
+    UnknownProxyModel->setSourceModel(originalUnknownModel);
     UnknownProxyModel->setFilterKeyColumn(-1);
     UnknownProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
     UnknownProxyModel->setFilterRegularExpression(regex);
     UnknownTable->setModel(UnknownProxyModel);
-    UnknownTable->setModel(UnknownProxyModel);
+}
+
+
+void MainWindow::on_progressBar_valueChanged(int value)
+{
+    if (value % 100 == 0)
+    {
+        int random_anek = rand() % anekdots.size(); // Получаем случайный индекс
+        QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
+        ui->AnekdotLabel->setText(NewAnekdot); // Устанавливаем новый текст
+    }
 }
 

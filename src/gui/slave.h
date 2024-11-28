@@ -6,6 +6,9 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QCoreApplication>
+#include "../../models/fileSchema.h"
+#include "../nsrlRepository/nsrlRepository.h"
+#include "../OutputDB/outputDB.h"
 
 class Slave : public QObject
 {
@@ -13,39 +16,26 @@ class Slave : public QObject
 public:
     explicit Slave(QString scandir,
                    QString nsrlfile,
-                   QStandardItemModel *knownmodel,
-                   QStandardItemModel *unknownmodel,
-                   QTreeView *knownview,
-                   QTreeView *unknownview,
                    QObject *parent = nullptr)
     {
         ScanDir = scandir;
         NsrlFile = nsrlfile;
-        KnownModel = knownmodel;
-        UnknownModel = unknownmodel;
-        KnownView = knownview;
-        UnknownView = unknownview;
     };
 private:
-    QStandardItemModel *KnownModel;
-    QStandardItemModel *UnknownModel;
-    QTreeView *KnownView;
-    QTreeView *UnknownView;
     QString ScanDir;
     QString NsrlFile;
     QString ReadFiles(QString NsrlFile, QString ScanDir);
-    void FillTreeView(QTreeView* treeView,
-                      QStandardItemModel *neededModel,
-                      const char* queryStr,
-                      QString DB_path);
+    void GetDataFromDB(QString DB_path);
+    void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase);
 public slots:
     void doWork();
 signals:
     void finished();
     int ProgressUpdated(int value);
     int ChangeRange(int value);
-    void AnekdotTime();
+    //void AnekdotTime();
     void WorkStart();
+    void ModelsReady(QStandardItemModel* model1, QStandardItemModel *model2);
 };
 
 #endif // SLAVE_H

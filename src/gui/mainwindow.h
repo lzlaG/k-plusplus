@@ -25,17 +25,18 @@ private slots:
     void RangeUpdate(int value);
     void on_SetupNsrlButton_clicked();
     void on_pushButton_clicked();
-    void AnekdotUpdate();
+    //void AnekdotUpdate();
     void BlockButtons();
     void UnblockButtons();
-
     void on_searchButton_clicked();
+    void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
+    void on_progressBar_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;
+    QStandardItemModel *originalKnownModel = new QStandardItemModel();
+    QStandardItemModel *originalUnknownModel = new QStandardItemModel();
 protected:
-    QStandardItemModel *KnownModel = new QStandardItemModel(this);
-    QStandardItemModel *UnknownModel = new QStandardItemModel(this);
     QString ScanDir;
     QString NsrlFile;
     QThread *Thread;

@@ -8,8 +8,23 @@
 #include "../OutputDB/outputDB.h"
 #include "../getFileFromDir/getFileFromDir.h"
 #include "../calculateShaHash/calculateShaHash.h"
-#include <future>
 #include <QDateTime>
+#include <thread>
+#include <vector>
+
+void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
+    for (int i = start; i < end; ++i) {
+        CalculateSHA1Hash(files[i]);         // Подсчет хэша
+        nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
+        //cout << "Insert file number: " << i << " into output db" << endl;
+        ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
+        //cout << "File number: " << i << endl;
+        emit ProgressUpdated(1);
+        //if (i % 80 == 0) {
+        //    emit AnekdotTime();
+        //}
+    }
+}
 
 QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 {
@@ -18,59 +33,81 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
             QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss")+".db"; //уникальное имя для бд
     std::filesystem::path ScanDirCorrect = ScanDir.toStdString();
     filesystem::path CorrectPath = ScanDirCorrect;
-    vector<FilePtr> filename = getFileFromDir(CorrectPath);               // Рекурсивный обход указанной директории
+    vector<FilePtr> filename = getFileFromDir(CorrectPath);   // Рекурсивный обход указанной директории
+    cout << "Amount of files in scan dir: " << filename.size() << endl;
     NSRLRepository nsrlRepo = NSRLRepository(NsrlFile.toStdString());    // Инициализация NSRL репозитория
     OutputDB ourDatabase = OutputDB(PathToDB.toStdString());   // Создание выходной базы данных
     emit ChangeRange(filename.size()); //издаем сигнал об изменении диапазона
 
-    for (int i = 0; i < filename.size(); i++)
-    {
-        if (i%70 == 0)
-        {
-            emit AnekdotTime();
-        };
-        future<void> a1 = async([filename, i]                         // Анализ контрольной суммы файла
-                                { CalculateSHA1Hash(filename[i]); }); // Подсчет хеша
-        a1.wait();
-        future<void> a2 = async([&nsrlRepo, filename, i]
-                                { nsrlRepo.IsHashInDB(filename[i]); });
-        a2.wait();
-        ourDatabase.FillTheDB(filename[i]); // Заполнение базы данных
-        emit ProgressUpdated(i+1);
+    int numThreads = std::thread::hardware_concurrency()-2; // Число потоков
+    int totalFiles = filename.size(); // количество файлов
+    emit ChangeRange(totalFiles);
+    cout << "Amount of files in scan dir: " << totalFiles << endl;
+    int filesPerThread = totalFiles / numThreads; //количество файлов отправляемых в один поток
+    std::vector<std::thread> threads;
+
+    for (int t = 0; t < numThreads; ++t) {
+            int start = t * filesPerThread;
+            int end = (t == numThreads - 1) ? totalFiles : start + filesPerThread;
+            cout << "Thread " << t << " start: " << start << " End: " << end << endl;
+            threads.emplace_back(&Slave::GuiMultiHashes, this, ref(filename), start, end, ref(nsrlRepo), ref(ourDatabase));
+    }
+
+    // Ожидание завершения всех потоков
+    for (auto& t : threads) {
+        t.join();
     }
     return PathToDB;
 }
 
-void Slave::FillTreeView(QTreeView* treeView, QStandardItemModel *neededModel, const char* queryStr, QString DB_path)
+void Slave::GetDataFromDB(QString DB_path)
 {
     sqlite3 *DB;
     sqlite3_open(DB_path.toUtf8().constData(), &DB);
     sqlite3_stmt* stmt;
-    if (sqlite3_prepare_v2(DB, queryStr, -1, &stmt, nullptr) != SQLITE_OK) {
-        qDebug() << "Ошибка подготовки запроса:" << sqlite3_errmsg(DB);
+    const char * KnownQuery = "SELECT * FROM KNOWN_FILES;";
+    if (sqlite3_prepare_v2(DB, KnownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
         return;
     }
-
+    QStandardItemModel *KnownModel= new QStandardItemModel();
     // Итерация по строкам результата
     while (sqlite3_step(stmt) == SQLITE_ROW) {
         QList<QStandardItem*> QueryResult;
-
         // Чтение данных из каждой колонки
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)))); // Колонка 1
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
         QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
-
-        neededModel->appendRow(QueryResult);
+        KnownModel->appendRow(QueryResult);
     }
-    treeView->setModel(neededModel);
-    sqlite3_finalize(stmt); // Завершение запроса
+    sqlite3_finalize(stmt); // Завершение запроса   по итоговым файлам
+    const char * UnknownQuery = "SELECT * FROM UNKNOWN_FILES;";
+    if (sqlite3_prepare_v2(DB, UnknownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+        return;
+    }
+    QStandardItemModel *UnknownModel = new QStandardItemModel();
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        QList<QStandardItem*> QueryResult;
+        // Чтение данных из каждой колонки
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1)))); // Колонка 1
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 2)))); // Колонка 2
+        QueryResult.append(new QStandardItem(reinterpret_cast<const char*>(sqlite3_column_text(stmt, 3)))); // Колонка 3
+        UnknownModel->appendRow(QueryResult);
+    }
+
+    KnownModel->setColumnCount(3);
+    UnknownModel->setColumnCount(3);
+    KnownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    UnknownModel->setHorizontalHeaderLabels({"Имя","Путь","Хэш"});
+    sqlite3_finalize(stmt);
+    emit ModelsReady(KnownModel, UnknownModel);
 }
 
 void Slave::doWork()
 {
     emit WorkStart();
-    QString OMEGAPATH = ReadFiles(NsrlFile, ScanDir);
-    FillTreeView(KnownView, KnownModel, "SELECT * FROM KNOWN_FILES;", OMEGAPATH);
-    FillTreeView(UnknownView, UnknownModel, "SELECT * FROM UNKNOWN_FILES;", OMEGAPATH);
+    QString DBPATH = ReadFiles(NsrlFile, ScanDir);
+    GetDataFromDB(DBPATH);
     emit finished();
 }

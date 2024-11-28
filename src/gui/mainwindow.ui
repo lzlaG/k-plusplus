@@ -14,157 +14,86 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>1221</width>
-      <height>541</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="KnownTab">
-     <attribute name="title">
-      <string>Известные файлы</string>
-     </attribute>
-     <widget class="QTreeView" name="KnownView">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>1221</width>
-        <height>531</height>
-       </rect>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="ScanDirLine"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="SetupDirButton">
+      <property name="text">
+       <string>Выберите директорию</string>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="UnknownTab">
-     <attribute name="title">
-      <string>Неизвестные файлы</string>
-     </attribute>
-     <widget class="QTreeView" name="UnknownView">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>1221</width>
-        <height>531</height>
-       </rect>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="NsrlFileLine"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="SetupNsrlButton">
+      <property name="text">
+       <string>Выберите БД</string>
       </property>
      </widget>
-    </widget>
-   </widget>
-   <widget class="QLineEdit" name="ScanDirLine">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>871</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="SetupDirButton">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>0</y>
-      <width>161</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Выберите директорию</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="NsrlFileLine">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>871</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="SetupNsrlButton">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>40</y>
-      <width>161</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Выберите БД</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>1170</x>
-      <y>670</y>
-      <width>61</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Старт</string>
-    </property>
-   </widget>
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>730</y>
-      <width>1221</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
-   <widget class="QLabel" name="AnekdotLabel">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>700</y>
-      <width>1081</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>TextLabel</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="searchLine">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>80</y>
-      <width>871</width>
-      <height>31</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="searchButton">
-    <property name="geometry">
-     <rect>
-      <x>890</x>
-      <y>80</y>
-      <width>161</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Поиск</string>
-    </property>
-   </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLineEdit" name="searchLine"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="searchButton">
+      <property name="text">
+       <string>Поиск</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0" colspan="3">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
+      </property>
+      <widget class="QWidget" name="KnownTab">
+       <attribute name="title">
+        <string>Известные файлы</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QTreeView" name="KnownView"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="UnknownTab">
+       <attribute name="title">
+        <string>Неизвестные файлы</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QTreeView" name="UnknownView"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QPushButton" name="pushButton">
+      <property name="text">
+       <string>Старт</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QLabel" name="AnekdotLabel">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" colspan="3">
+     <widget class="QProgressBar" name="progressBar">
+      <property name="value">
+       <number>24</number>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
