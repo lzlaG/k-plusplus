@@ -24,8 +24,8 @@ public:
 private:
     QString ScanDir;
     QString NsrlFile;
-    QString ReadFiles(QString NsrlFile, QString ScanDir);
-    void GetDataFromDB(QString DB_path);
+    void ReadFiles(QString NsrlFile, QString ScanDir);
+    void GetDataFromDB(OutputDB& ourDatabase);
     void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase);
 public slots:
     void doWork();

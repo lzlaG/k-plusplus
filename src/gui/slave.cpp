@@ -11,22 +11,21 @@
 #include <QDateTime>
 #include <thread>
 #include <vector>
+#include <mutex>
+
+std::mutex dbMutex;
 
 void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
-        //cout << "Insert file number: " << i << " into output db" << endl;
-        ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
-        //cout << "File number: " << i << endl;
+        ourDatabase.FillTheDB(files[i]); //запись данных в бд
+        GetDataFromDB(ourDatabase); // Обновление данных
         emit ProgressUpdated(1);
-        //if (i % 80 == 0) {
-        //    emit AnekdotTime();
-        //}
     }
 }
 
-QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
+void Slave::ReadFiles(QString NsrlFile, QString ScanDir)
 {
 
     QString PathToDB = QCoreApplication::applicationDirPath()+
@@ -57,17 +56,17 @@ QString Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     for (auto& t : threads) {
         t.join();
     }
-    return PathToDB;
+    //return PathToDB;
 }
 
-void Slave::GetDataFromDB(QString DB_path)
+void Slave::GetDataFromDB(OutputDB& ourDatabase)
 {
-    sqlite3 *DB;
-    sqlite3_open(DB_path.toUtf8().constData(), &DB);
+    //sqlite3 *DB;
+    //sqlite3_open(DB_path.toUtf8().constData(), &DB);
     sqlite3_stmt* stmt;
     const char * KnownQuery = "SELECT * FROM KNOWN_FILES;";
-    if (sqlite3_prepare_v2(DB, KnownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
-        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+    if (sqlite3_prepare_v2(ourDatabase.GetDB(), KnownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(ourDatabase.GetDB());
         return;
     }
     QStandardItemModel *KnownModel= new QStandardItemModel();
@@ -82,8 +81,8 @@ void Slave::GetDataFromDB(QString DB_path)
     }
     sqlite3_finalize(stmt); // Завершение запроса   по итоговым файлам
     const char * UnknownQuery = "SELECT * FROM UNKNOWN_FILES;";
-    if (sqlite3_prepare_v2(DB, UnknownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
-        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(DB);
+    if (sqlite3_prepare_v2(ourDatabase.GetDB(), UnknownQuery, -1, &stmt, nullptr) != SQLITE_OK) {
+        wcout << L"Ошибка подготовки запроса для таблицы с известными файлами:" << sqlite3_errmsg(ourDatabase.GetDB());
         return;
     }
     QStandardItemModel *UnknownModel = new QStandardItemModel();
@@ -107,7 +106,6 @@ void Slave::GetDataFromDB(QString DB_path)
 void Slave::doWork()
 {
     emit WorkStart();
-    QString DBPATH = ReadFiles(NsrlFile, ScanDir);
-    GetDataFromDB(DBPATH);
+    ReadFiles(NsrlFile, ScanDir);
     emit finished();
 }

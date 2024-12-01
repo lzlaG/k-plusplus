@@ -49,5 +49,6 @@ public:
         // cerr << errMsg << "\n";
     };
     void FillTheDB(FilePtr ourfile);
+    sqlite3* GetDB();
 };
 #endif // OUTPUT_DB_H
