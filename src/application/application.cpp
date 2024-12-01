@@ -1,12 +1,8 @@
 #include "application.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
-#include <future>
-#include <algorithm>
 #include <thread>
-
 #include "../nsrlRepository/nsrlRepository.h"
 #include "../getFileFromDir/getFileFromDir.h"
 #include "../OutputDB/outputDB.h"
@@ -26,7 +22,7 @@ void Application::GetMultiHashes(vector<FilePtr>& files, int start, int end, NSR
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
         ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
-        wcout << "File: " << files[i]->path.c_str() << " correctly calculated and inserted to output DB" << endl;
+        wcout << "\nFile: " << files[i]->path.c_str() << " correctly calculated and inserted to output DB" << endl;
     }
 }
 
@@ -66,7 +62,7 @@ int Application::exec()
     bool outputdb_check = true;
 
     // Если есть запрос на справку
-    if (m_vm.count("help"))
+    if (m_vm.count("help") || m_vm.empty())
     {
         // То выводим описание меню
         wcout << options_to_wstring(m_desc) << endl;

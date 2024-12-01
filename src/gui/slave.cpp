@@ -56,7 +56,6 @@ void Slave::ReadFiles(QString NsrlFile, QString ScanDir)
     for (auto& t : threads) {
         t.join();
     }
-    //return PathToDB;
 }
 
 void Slave::GetDataFromDB(OutputDB& ourDatabase)
