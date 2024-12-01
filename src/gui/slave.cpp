@@ -11,9 +11,6 @@
 #include <QDateTime>
 #include <thread>
 #include <vector>
-#include <mutex>
-
-std::mutex dbMutex;
 
 void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {

@@ -14,6 +14,8 @@
 #include "anekdots.h"
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
+#include "stopdialog.h"
+
 
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
@@ -229,5 +231,13 @@ void MainWindow::on_progressBar_valueChanged(int value)
         QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
         ui->AnekdotLabel->setText(NewAnekdot); // Устанавливаем новый текст
     }
+}
+
+
+void MainWindow::on_stopButton_clicked()
+{
+    StopDialog stopdialog;
+    stopdialog.setModal(true);
+    stopdialog.exec();
 }
 

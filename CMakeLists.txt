@@ -96,6 +96,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         src/gui/slave.h src/gui/slave.cpp
         src/gui/anekdots.h
+        src/gui/stopdialog.h src/gui/stopdialog.cpp src/gui/stopdialog.ui
+        src/gui/img/hamster.jpg
+
     )
 endif()
 target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)

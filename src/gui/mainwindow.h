@@ -32,6 +32,8 @@ private slots:
     void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
     void on_progressBar_valueChanged(int value);
 
+    void on_stopButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
