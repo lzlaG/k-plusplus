@@ -97,7 +97,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         src/gui/slave.h src/gui/slave.cpp
         src/gui/anekdots.h
         src/gui/stopdialog.h src/gui/stopdialog.cpp src/gui/stopdialog.ui
-        src/gui/img/hamster.jpg
+        src/gui/img/hamster25.jpg
 
     )
 endif()
