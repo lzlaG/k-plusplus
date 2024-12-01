@@ -25,8 +25,8 @@ void Application::GetMultiHashes(vector<FilePtr>& files, int start, int end, NSR
     for (int i = start; i < end; ++i) {
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
-        cout << "Insert file number: " << i << " into output db" << endl;
         ourDatabase.FillTheDB(files[i]); // Заполнение базы данных
+        wcout << "File: " << files[i]->path.c_str() << " correctly calculated and inserted to output DB" << endl;
     }
 }
 
