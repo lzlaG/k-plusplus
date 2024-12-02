@@ -33,12 +33,13 @@ private slots:
     void on_progressBar_valueChanged(int value);
     void on_stopButton_clicked();
     void ContinueAfterResume();
+    void StartFromZeroAfterPause();
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
     QStandardItemModel *originalUnknownModel = new QStandardItemModel();
     bool IsPaused = false;
-    bool StartFromZeroAfterPause = true;
+    bool startFromZeroAfterPause = false;
 protected:
     QString ScanDir;
     QString NsrlFile;

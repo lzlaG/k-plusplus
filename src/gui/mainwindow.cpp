@@ -35,9 +35,31 @@ void MainWindow::ContinueAfterResume()
 {
     slave1->resume();
     IsPaused = false;
-    StartFromZeroAfterPause = false;
+    startFromZeroAfterPause = false;
     ui->pushButton->setDisabled(true);
     ui->stopButton->setEnabled(true);
+}
+
+void MainWindow::StartFromZeroAfterPause()
+{
+    startFromZeroAfterPause = true;
+    //достаем таблицы из вкладок
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
+    //очищаем таблицы
+    KnownTable->setModel(nullptr);
+    UnknownTable->setModel(nullptr);
+    //зануляем все старые параметры и переактивируем кнопки
+    ui->ScanDirLine->clear();
+    ui->NsrlFileLine->clear();
+    ui->searchLine->setReadOnly(true);
+    ui->searchButton->setEnabled(false);
+    ui->stopButton->setEnabled(false);
+    ui->pushButton->setEnabled(true);
+    ui->SetupDirButton->setEnabled(true);
+    ui->SetupNsrlButton->setEnabled(true);
+    ui->AnekdotLabel->setText("");
+    ui->progressBar->setValue(0);
 }
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -112,13 +134,6 @@ void MainWindow::RangeUpdate(int value)
     ui->progressBar->setRange(0, value);
 };
 
-//void MainWindow::AnekdotUpdate()
-//{
-//    int random_anek = rand()%anekdots.size();
-//    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
-//    ui->AnekdotLabel->setText(NewAnekdot);
-//}
-
 void MainWindow::BlockButtons()
 {
     //кнопки управления потока, на время выполнения должны быть разблокированы
@@ -163,9 +178,11 @@ void MainWindow::on_pushButton_clicked()
         StopDialog stopdialog;
         stopdialog.setModal(true);
         QObject::connect(&stopdialog, &StopDialog::WantJustContinue, this, &MainWindow::ContinueAfterResume);
+        QObject::connect(&stopdialog, &StopDialog::WantStartFromZero, this, &MainWindow::StartFromZeroAfterPause);
         stopdialog.exec();
+        return;
     }
-    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true  && StartFromZeroAfterPause == true)
+    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true)
     {
         ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: white;}");
         ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
@@ -200,7 +217,7 @@ void MainWindow::on_pushButton_clicked()
 
         Thread->start(); //начинаем обработку
     }
-    if (NsrlFile.isEmpty() == true || ScanDir.isEmpty() == true )
+    else
     {
         if (NsrlFile.isEmpty() == true)
         {

@@ -18,10 +18,13 @@ public:
 private slots:
     void on_ContinueButton_clicked();
 
+    void on_StartFromZeroButton_clicked();
+
 private:
     Ui::StopDialog *ui;
 signals:
     void WantJustContinue();
+    void WantStartFromZero();
 };
 
 

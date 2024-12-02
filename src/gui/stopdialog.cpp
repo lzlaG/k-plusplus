@@ -6,6 +6,7 @@ StopDialog::StopDialog(QWidget *parent) :
     ui(new Ui::StopDialog)
 {
     ui->setupUi(this);
+    this->setWindowTitle("Выберите способ продолжения анализа...");
     QPixmap pixmap("../../../src/gui/img/hamster25.jpg");
     // Масштабируем изображение под размер QFrame
     QPixmap scaledPixmap = pixmap.scaled(ui->frame->size(), Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
@@ -26,6 +27,13 @@ StopDialog::~StopDialog()
 void StopDialog::on_ContinueButton_clicked()
 {
     emit WantJustContinue();
+    accept();
+}
+
+
+void StopDialog::on_StartFromZeroButton_clicked()
+{
+    emit WantStartFromZero();
     accept();
 }
 
