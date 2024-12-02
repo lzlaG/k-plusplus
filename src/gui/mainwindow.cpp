@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchButton->setDisabled(true);
     ui->searchLine->setReadOnly(true);
     ui->searchLine->setDisabled(true);
+    ui->stopButton->setDisabled(true);
 };
 
 MainWindow::~MainWindow()
@@ -112,12 +113,17 @@ void MainWindow::RangeUpdate(int value)
 
 void MainWindow::BlockButtons()
 {
-    ui->SetupDirButton->setEnabled(false);
+    //кнопки управления потока, на время выполнения должны быть разблокированы
+    ui->pushButton->setEnabled(true);
+    ui->stopButton->setEnabled(true);
+
+    //блокировка остальных кнопок
     ui->SetupNsrlButton->setEnabled(false);
-    ui->pushButton->setEnabled(false);
     ui->searchButton->setEnabled(false);
+    ui->SetupDirButton->setEnabled(false);
     ui->searchLine->setReadOnly(true);
     ui->searchLine->setDisabled(true);
+
 }
 void MainWindow::UnblockButtons()
 {
@@ -127,6 +133,7 @@ void MainWindow::UnblockButtons()
     ui->searchButton->setEnabled(true);
     ui->searchLine->setReadOnly(false);
     ui->searchLine->setDisabled(false);
+    ui->stopButton->setDisabled(true); //кнопку стоп блокируем, если поток завершился
 }
 
 void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *model2)
@@ -176,8 +183,6 @@ void MainWindow::on_pushButton_clicked()
         connect(slave1, &Slave::WorkStart, this, &MainWindow::BlockButtons); //блокировка кнопок на время выполнения потока
         connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons); //разблокировка
 
-        //обновляем анекдот
-        //connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
     }
     else
@@ -241,11 +246,6 @@ void MainWindow::on_stopButton_clicked()
     //stopdialog.setModal(true);
     //stopdialog.exec();
     slave1->requestPause();
-}
-
-
-void MainWindow::on_test_button_clicked()
-{
-    slave1->resume();
+    ui->stopButton->setEnabled(false);
 }
 

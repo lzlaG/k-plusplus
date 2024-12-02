@@ -32,15 +32,14 @@ private slots:
     void on_searchButton_clicked();
     void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
     void on_progressBar_valueChanged(int value);
-
     void on_stopButton_clicked();
-
-    void on_test_button_clicked();
 
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
     QStandardItemModel *originalUnknownModel = new QStandardItemModel();
+    bool IsPaused = false;
+    bool StartFromZeroAfterPause = false;
 protected:
     QString ScanDir;
     QString NsrlFile;
