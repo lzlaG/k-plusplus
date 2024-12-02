@@ -24,6 +24,7 @@ public:
         NsrlFile = nsrlfile;
     };
     void requestPause();
+    void resume();
 private:
     QString ScanDir;
     QString NsrlFile;

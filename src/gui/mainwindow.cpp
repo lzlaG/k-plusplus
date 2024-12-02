@@ -243,3 +243,9 @@ void MainWindow::on_stopButton_clicked()
     slave1->requestPause();
 }
 
+
+void MainWindow::on_test_button_clicked()
+{
+    slave1->resume();
+}
+

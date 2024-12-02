@@ -17,12 +17,15 @@ void Slave::requestPause() {
     m_pauseRequested.store(true);
 }
 
-
+void Slave::resume() {
+    m_pauseRequested.store(false);
+    m_waitCondition.wakeAll(); // Смена состояния для смены блокирвоки
+}
 void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {
         if (m_pauseRequested.load()) {
             QMutexLocker locker(&m_mutex); // Блокировка мьютекса
-            m_waitCondition.wait(&m_mutex); // Ожидание, пока не будет вызван `resume`
+            m_waitCondition.wait(&m_mutex); // Ожидание, пока не будет вызван resume
         }
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL

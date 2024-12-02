@@ -35,6 +35,8 @@ private slots:
 
     void on_stopButton_clicked();
 
+    void on_test_button_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
