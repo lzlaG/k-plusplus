@@ -112,5 +112,8 @@ endif()
 
 #отправляем в нужную директорию
 set_target_properties(k-pp-gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${GUI_OUTPUT_DIR})
+file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/build/bin/gui/img")
+file(COPY "${CMAKE_SOURCE_DIR}/src/gui/img/hamster25.jpg"
+     DESTINATION "${CMAKE_SOURCE_DIR}/build/bin/gui/img/")
 
 

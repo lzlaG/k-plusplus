@@ -35,14 +35,19 @@ void MainWindow::ContinueAfterResume()
 {
     slave1->resume();
     IsPaused = false;
-    startFromZeroAfterPause = false;
     ui->pushButton->setDisabled(true);
     ui->stopButton->setEnabled(true);
 }
 
 void MainWindow::StartFromZeroAfterPause()
 {
-    startFromZeroAfterPause = true;
+    IsPaused = false;
+    //останавливаем поток
+    Thread->quit();
+    Thread->terminate();
+    //очищаем старые параметры сканирования
+    NsrlFile.clear();
+    ScanDir.clear();
     //достаем таблицы из вкладок
     QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
     QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
@@ -67,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setWindowTitle("k-pp gui");
+
     //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
@@ -263,7 +269,7 @@ void MainWindow::on_searchButton_clicked()
 
 void MainWindow::on_progressBar_valueChanged(int value)
 {
-    if (value % 100 == 0)
+    if (value % 125 == 0)
     {
         int random_anek = rand() % anekdots.size(); // Получаем случайный индекс
         QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);

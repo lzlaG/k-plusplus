@@ -39,7 +39,6 @@ private:
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
     QStandardItemModel *originalUnknownModel = new QStandardItemModel();
     bool IsPaused = false;
-    bool startFromZeroAfterPause = false;
 protected:
     QString ScanDir;
     QString NsrlFile;
