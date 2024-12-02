@@ -11,9 +11,19 @@
 #include <QDateTime>
 #include <thread>
 #include <vector>
+#include <QThread>
+
+void Slave::requestPause() {
+    m_pauseRequested.store(true);
+}
+
 
 void Slave::GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase) {
     for (int i = start; i < end; ++i) {
+        if (m_pauseRequested.load()) {
+            QMutexLocker locker(&m_mutex); // Блокировка мьютекса
+            m_waitCondition.wait(&m_mutex); // Ожидание, пока не будет вызван `resume`
+        }
         CalculateSHA1Hash(files[i]);         // Подсчет хэша
         nsrlRepo.IsHashInDB(files[i]);      // Проверка в базе NSRL
         ourDatabase.FillTheDB(files[i]); //запись данных в бд
@@ -102,6 +112,7 @@ void Slave::GetDataFromDB(OutputDB& ourDatabase)
 void Slave::doWork()
 {
     emit WorkStart();
+    m_pauseRequested.store(false);
     ReadFiles(NsrlFile, ScanDir);
     emit finished();
 }

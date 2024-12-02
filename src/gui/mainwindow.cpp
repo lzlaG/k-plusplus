@@ -15,6 +15,7 @@
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
 #include "stopdialog.h"
+#include <QTimer>
 
 
 
@@ -149,7 +150,7 @@ void MainWindow::on_pushButton_clicked()
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
 
-        Slave *slave1 =new Slave(ScanDir, NsrlFile);
+        slave1 =new Slave(ScanDir, NsrlFile);
         //инициализируем поток и перемещаем туда объект
         Thread = new QThread(this);
         slave1->moveToThread(Thread);
@@ -236,8 +237,9 @@ void MainWindow::on_progressBar_valueChanged(int value)
 
 void MainWindow::on_stopButton_clicked()
 {
-    StopDialog stopdialog;
-    stopdialog.setModal(true);
-    stopdialog.exec();
+    //StopDialog stopdialog;
+    //stopdialog.setModal(true);
+    //stopdialog.exec();
+    slave1->requestPause();
 }
 

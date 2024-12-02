@@ -9,6 +9,8 @@
 #include "../../models/fileSchema.h"
 #include "../nsrlRepository/nsrlRepository.h"
 #include "../OutputDB/outputDB.h"
+#include <QMutex>
+#include <QWaitCondition>
 
 class Slave : public QObject
 {
@@ -21,19 +23,22 @@ public:
         ScanDir = scandir;
         NsrlFile = nsrlfile;
     };
+    void requestPause();
 private:
     QString ScanDir;
     QString NsrlFile;
     void ReadFiles(QString NsrlFile, QString ScanDir);
     void GetDataFromDB(OutputDB& ourDatabase);
     void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase);
+    atomic<bool> m_pauseRequested;
+    QMutex m_mutex;
+    QWaitCondition m_waitCondition;
 public slots:
     void doWork();
 signals:
     void finished();
     int ProgressUpdated(int value);
     int ChangeRange(int value);
-    //void AnekdotTime();
     void WorkStart();
     void ModelsReady(QStandardItemModel* model1, QStandardItemModel *model2);
 };

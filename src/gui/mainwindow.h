@@ -6,6 +6,7 @@
 #include <QThread>
 #include <QString>
 #include <QTreeView>
+#include "slave.h"
 
 namespace Ui {
 class MainWindow;
@@ -42,6 +43,7 @@ protected:
     QString ScanDir;
     QString NsrlFile;
     QThread *Thread;
+    Slave *slave1;
 };
 
 #endif // MAINWINDOW_H
