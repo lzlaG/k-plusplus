@@ -31,6 +31,14 @@ QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
     return treeView;
 }
 
+void MainWindow::ContinueAfterResume()
+{
+    slave1->resume();
+    IsPaused = false;
+    StartFromZeroAfterPause = false;
+    ui->pushButton->setDisabled(true);
+    ui->stopButton->setEnabled(true);
+}
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -114,7 +122,7 @@ void MainWindow::RangeUpdate(int value)
 void MainWindow::BlockButtons()
 {
     //кнопки управления потока, на время выполнения должны быть разблокированы
-    ui->pushButton->setEnabled(true);
+    ui->pushButton->setEnabled(false);
     ui->stopButton->setEnabled(true);
 
     //блокировка остальных кнопок
@@ -150,7 +158,14 @@ void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *mod
 
 void MainWindow::on_pushButton_clicked()
 {
-    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
+    if (IsPaused)
+    {
+        StopDialog stopdialog;
+        stopdialog.setModal(true);
+        QObject::connect(&stopdialog, &StopDialog::WantJustContinue, this, &MainWindow::ContinueAfterResume);
+        stopdialog.exec();
+    }
+    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true  && StartFromZeroAfterPause == true)
     {
         ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: white;}");
         ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
@@ -185,7 +200,7 @@ void MainWindow::on_pushButton_clicked()
 
         Thread->start(); //начинаем обработку
     }
-    else
+    if (NsrlFile.isEmpty() == true || ScanDir.isEmpty() == true )
     {
         if (NsrlFile.isEmpty() == true)
         {
@@ -242,10 +257,9 @@ void MainWindow::on_progressBar_valueChanged(int value)
 
 void MainWindow::on_stopButton_clicked()
 {
-    //StopDialog stopdialog;
-    //stopdialog.setModal(true);
-    //stopdialog.exec();
     slave1->requestPause();
+    IsPaused = true;
     ui->stopButton->setEnabled(false);
+    ui->pushButton->setEnabled(true);
 }
 

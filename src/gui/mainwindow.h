@@ -26,20 +26,19 @@ private slots:
     void RangeUpdate(int value);
     void on_SetupNsrlButton_clicked();
     void on_pushButton_clicked();
-    //void AnekdotUpdate();
     void BlockButtons();
     void UnblockButtons();
     void on_searchButton_clicked();
     void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
     void on_progressBar_valueChanged(int value);
     void on_stopButton_clicked();
-
+    void ContinueAfterResume();
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
     QStandardItemModel *originalUnknownModel = new QStandardItemModel();
     bool IsPaused = false;
-    bool StartFromZeroAfterPause = false;
+    bool StartFromZeroAfterPause = true;
 protected:
     QString ScanDir;
     QString NsrlFile;

@@ -22,3 +22,10 @@ StopDialog::~StopDialog()
 {
     delete ui;
 }
+
+void StopDialog::on_ContinueButton_clicked()
+{
+    emit WantJustContinue();
+    accept();
+}
+
