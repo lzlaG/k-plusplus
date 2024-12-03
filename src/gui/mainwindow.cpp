@@ -33,10 +33,15 @@ QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
 
 void MainWindow::ContinueAfterResume()
 {
-    slave1->resume();
-    IsPaused = false;
+    slave1->resume();// вызываем паузу в потоке
+    IsPaused = false; //меняем флаг паузы
+    //возращаем кнопкни в состояние до остановки
     ui->pushButton->setDisabled(true);
     ui->stopButton->setEnabled(true);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->clear();
+    ui->searchLine->setEnabled(false);
+    ui->searchButton->setEnabled(false);
 }
 
 void MainWindow::StartFromZeroAfterPause()
@@ -58,6 +63,7 @@ void MainWindow::StartFromZeroAfterPause()
     ui->ScanDirLine->clear();
     ui->NsrlFileLine->clear();
     ui->searchLine->setReadOnly(true);
+    ui->searchLine->setEnabled(false);
     ui->searchButton->setEnabled(false);
     ui->stopButton->setEnabled(false);
     ui->pushButton->setEnabled(true);
@@ -284,5 +290,10 @@ void MainWindow::on_stopButton_clicked()
     IsPaused = true;
     ui->stopButton->setEnabled(false);
     ui->pushButton->setEnabled(true);
+    //разблокировка поиска, если пользователь остановил обработку
+    ui->searchLine->setReadOnly(false);
+    ui->searchLine->setEnabled(true);
+    ui->searchButton->setEnabled(true);
+
 }
 
