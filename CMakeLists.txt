@@ -96,6 +96,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         src/gui/slave.h src/gui/slave.cpp
         src/gui/anekdots.h
+        src/gui/stopdialog.h src/gui/stopdialog.cpp src/gui/stopdialog.ui
+        src/gui/img/hamster25.jpg
+
     )
 endif()
 target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
@@ -109,5 +112,8 @@ endif()
 
 #отправляем в нужную директорию
 set_target_properties(k-pp-gui PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${GUI_OUTPUT_DIR})
+file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/build/bin/gui/img")
+file(COPY "${CMAKE_SOURCE_DIR}/src/gui/img/hamster25.jpg"
+     DESTINATION "${CMAKE_SOURCE_DIR}/build/bin/gui/img/")
 
 

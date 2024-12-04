@@ -1,5 +1,6 @@
 #include <iostream>
 #include "outputDB.h"
+#include "../../lib/sqlite3/sqlite3.h"
 
 using namespace std;
 
@@ -27,4 +28,9 @@ void OutputDB::FillTheDB(FilePtr ourfile)
     } else {
         std::cerr << "Ошибка подготовки запроса: " << sqlite3_errmsg(DB) << std::endl;
     }
+}
+
+sqlite3* OutputDB::GetDB()
+{
+    return DB;
 }

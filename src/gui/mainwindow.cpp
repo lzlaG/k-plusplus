@@ -14,6 +14,9 @@
 #include "anekdots.h"
 #include <QSortFilterProxyModel>
 #include <QMessageBox>
+#include "stopdialog.h"
+#include <QTimer>
+
 
 
 QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
@@ -28,12 +31,54 @@ QTreeView* getTreeViewFromTab(QTabWidget* tabWidget, int tabIndex) {
     return treeView;
 }
 
+void MainWindow::ContinueAfterResume()
+{
+    slave1->resume();// вызываем паузу в потоке
+    IsPaused = false; //меняем флаг паузы
+    //возращаем кнопкни в состояние до остановки
+    ui->pushButton->setDisabled(true);
+    ui->stopButton->setEnabled(true);
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->clear();
+    ui->searchLine->setEnabled(false);
+    ui->searchButton->setEnabled(false);
+}
+
+void MainWindow::StartFromZeroAfterPause()
+{
+    IsPaused = false;
+    //останавливаем поток
+    Thread->quit();
+    Thread->terminate();
+    //очищаем старые параметры сканирования
+    NsrlFile.clear();
+    ScanDir.clear();
+    //достаем таблицы из вкладок
+    QTreeView* KnownTable = getTreeViewFromTab(ui->tabWidget, 0);
+    QTreeView* UnknownTable = getTreeViewFromTab(ui->tabWidget, 1);
+    //очищаем таблицы
+    KnownTable->setModel(nullptr);
+    UnknownTable->setModel(nullptr);
+    //зануляем все старые параметры и переактивируем кнопки
+    ui->ScanDirLine->clear();
+    ui->NsrlFileLine->clear();
+    ui->searchLine->setReadOnly(true);
+    ui->searchLine->setEnabled(false);
+    ui->searchButton->setEnabled(false);
+    ui->stopButton->setEnabled(false);
+    ui->pushButton->setEnabled(true);
+    ui->SetupDirButton->setEnabled(true);
+    ui->SetupNsrlButton->setEnabled(true);
+    ui->AnekdotLabel->setText("");
+    ui->progressBar->setValue(0);
+}
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     this->setWindowTitle("k-pp gui");
+
     //параметры строк
     ui->ScanDirLine->setReadOnly(true);
     ui->NsrlFileLine->setReadOnly(true);
@@ -60,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->searchButton->setDisabled(true);
     ui->searchLine->setReadOnly(true);
     ui->searchLine->setDisabled(true);
+    ui->stopButton->setDisabled(true);
 };
 
 MainWindow::~MainWindow()
@@ -100,21 +146,19 @@ void MainWindow::RangeUpdate(int value)
     ui->progressBar->setRange(0, value);
 };
 
-//void MainWindow::AnekdotUpdate()
-//{
-//    int random_anek = rand()%anekdots.size();
-//    QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
-//    ui->AnekdotLabel->setText(NewAnekdot);
-//}
-
 void MainWindow::BlockButtons()
 {
-    ui->SetupDirButton->setEnabled(false);
-    ui->SetupNsrlButton->setEnabled(false);
+    //кнопки управления потока, на время выполнения должны быть разблокированы
     ui->pushButton->setEnabled(false);
+    ui->stopButton->setEnabled(true);
+
+    //блокировка остальных кнопок
+    ui->SetupNsrlButton->setEnabled(false);
     ui->searchButton->setEnabled(false);
+    ui->SetupDirButton->setEnabled(false);
     ui->searchLine->setReadOnly(true);
     ui->searchLine->setDisabled(true);
+
 }
 void MainWindow::UnblockButtons()
 {
@@ -124,6 +168,7 @@ void MainWindow::UnblockButtons()
     ui->searchButton->setEnabled(true);
     ui->searchLine->setReadOnly(false);
     ui->searchLine->setDisabled(false);
+    ui->stopButton->setDisabled(true); //кнопку стоп блокируем, если поток завершился
 }
 
 void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *model2)
@@ -140,14 +185,23 @@ void MainWindow::handleModels(QStandardItemModel *model1,QStandardItemModel *mod
 
 void MainWindow::on_pushButton_clicked()
 {
-    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true )
+    if (IsPaused)
+    {
+        StopDialog stopdialog;
+        stopdialog.setModal(true);
+        QObject::connect(&stopdialog, &StopDialog::WantJustContinue, this, &MainWindow::ContinueAfterResume);
+        QObject::connect(&stopdialog, &StopDialog::WantStartFromZero, this, &MainWindow::StartFromZeroAfterPause);
+        stopdialog.exec();
+        return;
+    }
+    if (NsrlFile.isEmpty() != true && ScanDir.isEmpty() != true)
     {
         ui->ScanDirLine->setStyleSheet("QLineEdit {background-color: white;}");
         ui->NsrlFileLine->setStyleSheet("QLineEdit {background-color: white;}");
         //обнуляем значение прогресс бара
         ui->progressBar->setValue(0);
 
-        Slave *slave1 =new Slave(ScanDir, NsrlFile);
+        slave1 =new Slave(ScanDir, NsrlFile);
         //инициализируем поток и перемещаем туда объект
         Thread = new QThread(this);
         slave1->moveToThread(Thread);
@@ -173,8 +227,6 @@ void MainWindow::on_pushButton_clicked()
         connect(slave1, &Slave::WorkStart, this, &MainWindow::BlockButtons); //блокировка кнопок на время выполнения потока
         connect(slave1, &Slave::finished, this, &MainWindow::UnblockButtons); //разблокировка
 
-        //обновляем анекдот
-        //connect(slave1, &Slave::AnekdotTime, this, &MainWindow::AnekdotUpdate);
         Thread->start(); //начинаем обработку
     }
     else
@@ -223,11 +275,25 @@ void MainWindow::on_searchButton_clicked()
 
 void MainWindow::on_progressBar_valueChanged(int value)
 {
-    if (value % 100 == 0)
+    if (value % 125 == 0)
     {
         int random_anek = rand() % anekdots.size(); // Получаем случайный индекс
         QString NewAnekdot = QString::fromStdString(anekdots[random_anek]);
         ui->AnekdotLabel->setText(NewAnekdot); // Устанавливаем новый текст
     }
+}
+
+
+void MainWindow::on_stopButton_clicked()
+{
+    slave1->requestPause();
+    IsPaused = true;
+    ui->stopButton->setEnabled(false);
+    ui->pushButton->setEnabled(true);
+    //разблокировка поиска, если пользователь остановил обработку
+    ui->searchLine->setReadOnly(false);
+    ui->searchLine->setEnabled(true);
+    ui->searchButton->setEnabled(true);
+
 }
 
