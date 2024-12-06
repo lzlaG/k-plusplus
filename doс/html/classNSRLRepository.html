@@ -134,7 +134,7 @@ Public Member Functions</h2></td></tr>
 <div class="line"><span class="lineno">   16</span>        path.c_str(),</div>
 <div class="line"><span class="lineno">   17</span>        &amp;Database,</div>
 <div class="line"><span class="lineno">   18</span>        SQLITE_OPEN_READWRITE,</div>
-<div class="line"><span class="lineno">   19</span>        NULL);   <span class="comment">// открытие бд и передача имени бд open - имя указывается в кодировке</span></div>
+<div class="line"><span class="lineno">   19</span>        NULL); <span class="comment">// открытие бд и передача имени бд open - имя указывается в кодировке</span></div>
 <div class="line"><span class="lineno">   20</span> </div>
 <div class="line"><span class="lineno">   21</span>    <span class="keywordflow">if</span> (openResult != SQLITE_OK)</div>
 <div class="line"><span class="lineno">   22</span>    {</div>
@@ -166,7 +166,7 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   27</span>{ sqlite3_close(Database); }; <span class="comment">// закрытие бд</span></div>
+<div class="fragment"><div class="line"><span class="lineno">   34</span>{ sqlite3_close(Database); }; <span class="comment">// закрытие бд</span></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -188,7 +188,7 @@ Public Member Functions</h2></td></tr>
 <p>Функция считывания хэша из базы NSRL</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">Структура</td><td>файла с названием и путем до него </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">file</td><td>Структура файла с названием и путем до него </td></tr>
   </table>
   </dd>
 </dl>
@@ -198,13 +198,13 @@ Public Member Functions</h2></td></tr>
 <div class="line"><span class="lineno">   34</span>    <span class="comment">/*</span></div>
 <div class="line"><span class="lineno">   35</span><span class="comment">        SELECT count(*) FROM FILE WHERE sha1 = &quot;7691C372B3C494671218EE5C8C56A6D7C53815B7&quot;;</span></div>
 <div class="line"><span class="lineno">   36</span><span class="comment">    */</span></div>
-<div class="line"><span class="lineno">   37</span> </div>
-<div class="line"><span class="lineno">   38</span>    <span class="keywordtype">int</span> execResult = sqlite3_prepare_v2(Database,</div>
-<div class="line"><span class="lineno">   39</span>                                        (<span class="stringliteral">&quot;SELECT count(*) FROM FILE WHERE sha1 = \&quot;&quot;</span> + file-&gt;<a class="code hl_variable" href="structFile.html#a77a765f186254398071b306d289884b9">hash_sha1</a> + <span class="stringliteral">&quot;\&quot;; &quot;</span>).c_str(), <span class="comment">// запрос</span></div>
-<div class="line"><span class="lineno">   40</span>                                        -1,                                                                               <span class="comment">// длина SQL-запроса в символах</span></div>
-<div class="line"><span class="lineno">   41</span>                                        &amp;pStatement,</div>
-<div class="line"><span class="lineno">   42</span>                                        NULL);</div>
-<div class="line"><span class="lineno">   43</span> </div>
+<div class="line"><span class="lineno">   37</span>    <span class="keywordtype">int</span> execResult = sqlite3_prepare_v2(Database,</div>
+<div class="line"><span class="lineno">   38</span>                                        query.c_str(), <span class="comment">// запрос</span></div>
+<div class="line"><span class="lineno">   39</span>                                        -1,                                                                                        <span class="comment">// длина SQL-запроса в символах</span></div>
+<div class="line"><span class="lineno">   40</span>                                        &amp;pStatement,</div>
+<div class="line"><span class="lineno">   41</span>                                        NULL);</div>
+<div class="line"><span class="lineno">   42</span> </div>
+<div class="line"><span class="lineno">   43</span>    execResult = sqlite3_bind_text(pStatement, 1, file-&gt;<a class="code hl_variable" href="structFile.html#a77a765f186254398071b306d289884b9">hash_sha1</a>.c_str(), -1, SQLITE_TRANSIENT);</div>
 <div class="line"><span class="lineno">   44</span>    execResult = sqlite3_step(pStatement);</div>
 <div class="line"><span class="lineno">   45</span>    <span class="keywordtype">int</span> n = 0;</div>
 <div class="line"><span class="lineno">   46</span>    <span class="keywordflow">if</span> (execResult == SQLITE_ROW)</div>
@@ -212,18 +212,18 @@ Public Member Functions</h2></td></tr>
 <div class="line"><span class="lineno">   48</span>        n = sqlite3_column_int(pStatement, 0); <span class="comment">// вывод количества записей</span></div>
 <div class="line"><span class="lineno">   49</span>    }</div>
 <div class="line"><span class="lineno">   50</span>    sqlite3_finalize(pStatement);</div>
-<div class="line"><span class="lineno">   51</span>    <span class="comment">// cout &lt;&lt; to_string(n) &lt;&lt; endl;</span></div>
-<div class="line"><span class="lineno">   52</span>    <span class="keywordflow">if</span> (n &gt; 0)</div>
-<div class="line"><span class="lineno">   53</span>    {</div>
-<div class="line"><span class="lineno">   54</span>        file-&gt;<a class="code hl_variable" href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">Is_nsrl_db</a> = <span class="keyword">true</span>;</div>
-<div class="line"><span class="lineno">   55</span>    }</div>
-<div class="line"><span class="lineno">   56</span>    <span class="keywordflow">else</span></div>
-<div class="line"><span class="lineno">   57</span>    {</div>
-<div class="line"><span class="lineno">   58</span>        file-&gt;<a class="code hl_variable" href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">Is_nsrl_db</a> = <span class="keyword">false</span>;</div>
-<div class="line"><span class="lineno">   59</span>    }</div>
+<div class="line"><span class="lineno">   51</span>    <span class="keywordflow">if</span> (n &gt; 0)</div>
+<div class="line"><span class="lineno">   52</span>    {</div>
+<div class="line"><span class="lineno">   53</span>        file-&gt;<a class="code hl_variable" href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">Is_nsrl_db</a> = <span class="keyword">true</span>;</div>
+<div class="line"><span class="lineno">   54</span>    }</div>
+<div class="line"><span class="lineno">   55</span>    <span class="keywordflow">else</span></div>
+<div class="line"><span class="lineno">   56</span>    {</div>
+<div class="line"><span class="lineno">   57</span>        file-&gt;<a class="code hl_variable" href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">Is_nsrl_db</a> = <span class="keyword">false</span>;</div>
+<div class="line"><span class="lineno">   58</span>    }</div>
+<div class="line"><span class="lineno">   59</span>    <span class="comment">//sqlite3_finalize(pStatement);</span></div>
 <div class="line"><span class="lineno">   60</span>}</div>
-<div class="ttc" id="astructFile_html_a77a765f186254398071b306d289884b9"><div class="ttname"><a href="structFile.html#a77a765f186254398071b306d289884b9">File::hash_sha1</a></div><div class="ttdeci">string hash_sha1</div><div class="ttdoc">Контрольная сумма, вычисленная чрез алгоритм sha1.</div><div class="ttdef"><b>Definition</b> fileSchema.h:18</div></div>
-<div class="ttc" id="astructFile_html_ad9149ba0e8af83e302dc57b04023e77f"><div class="ttname"><a href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">File::Is_nsrl_db</a></div><div class="ttdeci">bool Is_nsrl_db</div><div class="ttdoc">Переменная, указывающая принадлежность к базе NSRL.</div><div class="ttdef"><b>Definition</b> fileSchema.h:22</div></div>
+<div class="ttc" id="astructFile_html_a77a765f186254398071b306d289884b9"><div class="ttname"><a href="structFile.html#a77a765f186254398071b306d289884b9">File::hash_sha1</a></div><div class="ttdeci">string hash_sha1</div><div class="ttdoc">Контрольная сумма, вычисленная чрез алгоритм sha1.</div><div class="ttdef"><b>Definition</b> fileSchema.h:19</div></div>
+<div class="ttc" id="astructFile_html_ad9149ba0e8af83e302dc57b04023e77f"><div class="ttname"><a href="structFile.html#ad9149ba0e8af83e302dc57b04023e77f">File::Is_nsrl_db</a></div><div class="ttdeci">bool Is_nsrl_db</div><div class="ttdoc">Переменная, указывающая принадлежность к базе NSRL.</div><div class="ttdef"><b>Definition</b> fileSchema.h:23</div></div>
 </div><!-- fragment -->
 </div>
 </div>

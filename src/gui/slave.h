@@ -12,6 +12,9 @@
 #include <QMutex>
 #include <QWaitCondition>
 
+/**
+ * Класс для обработки файлов для gui
+ */
 class Slave : public QObject
 {
     Q_OBJECT
@@ -25,12 +28,13 @@ public:
     };
     void requestPause();
     void resume();
+
 private:
     QString ScanDir;
     QString NsrlFile;
     void ReadFiles(QString NsrlFile, QString ScanDir);
-    void GetDataFromDB(OutputDB& ourDatabase);
-    void GuiMultiHashes(vector<FilePtr>& files, int start, int end, NSRLRepository& nsrlRepo, OutputDB& ourDatabase);
+    void GetDataFromDB(OutputDB &ourDatabase);
+    void GuiMultiHashes(vector<FilePtr> &files, int start, int end, NSRLRepository &nsrlRepo, OutputDB &ourDatabase);
     atomic<bool> m_pauseRequested;
     QMutex m_mutex;
     QWaitCondition m_waitCondition;
@@ -41,7 +45,7 @@ signals:
     int ProgressUpdated(int value);
     int ChangeRange(int value);
     void WorkStart();
-    void ModelsReady(QStandardItemModel* model1, QStandardItemModel *model2);
+    void ModelsReady(QStandardItemModel *model1, QStandardItemModel *model2);
 };
 
 #endif // SLAVE_H

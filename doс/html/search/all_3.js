@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['hash_5fcrc32_0',['hash_crc32',['../structFile.html#a1cc460dddaf83ca1e4e2b859d394de15',1,'File']]],
-  ['hash_5fmd5_1',['hash_md5',['../structFile.html#ac5f8841b1f21f0ce5b9b84494cd24989',1,'File']]],
-  ['hash_5fsha1_2',['hash_sha1',['../structFile.html#a77a765f186254398071b306d289884b9',1,'File']]],
-  ['hash_5fsha256_3',['hash_sha256',['../structFile.html#a336f749a382a73164d8ce77efcc86fae',1,'File']]]
+  ['file_0',['File',['../structFile.html',1,'']]],
+  ['fileptr_1',['FilePtr',['../fileSchema_8h.html#a35ff575ea62e3d1d0a267693c2a58a3a',1,'fileSchema.h']]],
+  ['fileschema_2eh_2',['fileSchema.h',['../fileSchema_8h.html',1,'']]],
+  ['fillthedb_3',['FillTheDB',['../classOutputDB.html#a904d79ede8dc577af73ee321343dad69',1,'OutputDB']]]
 ];

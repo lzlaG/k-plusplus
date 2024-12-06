@@ -98,19 +98,20 @@ $(function(){ initResizable(false); });
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="fileSchema_8h_source.html">../../models/fileSchema.h</a>&quot;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
 </div>
 <p><a href="getFileFromDir_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9ad05d07e2a83a3dcc004c3ef62ec293" id="r_a9ad05d07e2a83a3dcc004c3ef62ec293"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="fileSchema_8h.html#a35ff575ea62e3d1d0a267693c2a58a3a">FilePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ad05d07e2a83a3dcc004c3ef62ec293">getFileFromDir</a> (string path)</td></tr>
-<tr class="separator:a9ad05d07e2a83a3dcc004c3ef62ec293"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e21ea62f8786ebc46682fc1c0bc6227" id="r_a7e21ea62f8786ebc46682fc1c0bc6227"><td class="memItemLeft" align="right" valign="top">vector&lt; <a class="el" href="fileSchema_8h.html#a35ff575ea62e3d1d0a267693c2a58a3a">FilePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e21ea62f8786ebc46682fc1c0bc6227">getFileFromDir</a> (filesystem::path path)</td></tr>
+<tr class="separator:a7e21ea62f8786ebc46682fc1c0bc6227"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Модуль, необходимый для получения имен и путей файлов из указанной директории </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a9ad05d07e2a83a3dcc004c3ef62ec293" name="a9ad05d07e2a83a3dcc004c3ef62ec293"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ad05d07e2a83a3dcc004c3ef62ec293">&#9670;&#160;</a></span>getFileFromDir()</h2>
+<a id="a7e21ea62f8786ebc46682fc1c0bc6227" name="a7e21ea62f8786ebc46682fc1c0bc6227"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e21ea62f8786ebc46682fc1c0bc6227">&#9670;&#160;</a></span>getFileFromDir()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -118,58 +119,67 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">vector&lt; <a class="el" href="fileSchema_8h.html#a35ff575ea62e3d1d0a267693c2a58a3a">FilePtr</a> &gt; getFileFromDir </td>
           <td>(</td>
-          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td class="paramtype">filesystem::path</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Фунция обхода директории</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">path</td><td>Путь к анализируемой директории </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">result</td><td>Заполненый вектор со считанными именами и путями в собственных структурах для каждого файла </td></tr>
-  </table>
-  </dd>
-</dl>
-<div class="fragment"><div class="line"><span class="lineno">   18</span>{</div>
-<div class="line"><span class="lineno">   19</span>    vector&lt;FilePtr&gt; result;</div>
-<div class="line"><span class="lineno">   20</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;dirEntry : recursive_directory_iterator(path))</div>
-<div class="line"><span class="lineno">   21</span>    {</div>
-<div class="line"><span class="lineno">   22</span>        filesystem::path filePath = dirEntry.path();</div>
-<div class="line"><span class="lineno">   23</span>        filesystem::path fileName = dirEntry.path().filename();</div>
-<div class="line"><span class="lineno">   24</span> </div>
-<div class="line"><span class="lineno">   25</span>        <span class="keywordflow">try</span></div>
-<div class="line"><span class="lineno">   26</span>        {</div>
-<div class="line"><span class="lineno">   27</span>            <span class="keywordflow">if</span> (!is_directory(dirEntry) &amp;&amp; exists(dirEntry))</div>
-<div class="line"><span class="lineno">   28</span>            {</div>
-<div class="line"><span class="lineno">   29</span>                ifstream IsFileOpen(filePath);</div>
-<div class="line"><span class="lineno">   30</span> </div>
-<div class="line"><span class="lineno">   31</span>                <span class="keywordflow">if</span> (!IsFileOpen.is_open())</div>
-<div class="line"><span class="lineno">   32</span>                {</div>
-<div class="line"><span class="lineno">   33</span>                    cerr &lt;&lt; <span class="stringliteral">&quot;Can&#39;t open the file (permisson denied): &quot;</span> &lt;&lt; filePath &lt;&lt; endl;</div>
-<div class="line"><span class="lineno">   34</span>                    <span class="keywordflow">continue</span>;</div>
-<div class="line"><span class="lineno">   35</span>                }</div>
-<div class="line"><span class="lineno">   36</span> </div>
-<div class="line"><span class="lineno">   37</span>                <a class="code hl_struct" href="structFile.html">FilePtr</a> file = <span class="keyword">new</span> <a class="code hl_struct" href="structFile.html">File</a>();</div>
-<div class="line"><span class="lineno">   38</span>                file-&gt;<a class="code hl_variable" href="structFile.html#afd963fd6ba55fa762f7d3ab962e97e6c">path</a> = filePath.string();</div>
-<div class="line"><span class="lineno">   39</span>                file-&gt;<a class="code hl_variable" href="structFile.html#afdbc9a614036edaee0ff8a7ee0f1b8d0">name</a> = fileName.string();</div>
-<div class="line"><span class="lineno">   40</span>                result.push_back(file);</div>
-<div class="line"><span class="lineno">   41</span>            }</div>
-<div class="line"><span class="lineno">   42</span>        }</div>
-<div class="line"><span class="lineno">   43</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> filesystem_error &amp;e)</div>
-<div class="line"><span class="lineno">   44</span>        {</div>
-<div class="line"><span class="lineno">   45</span>            cerr &lt;&lt; <span class="stringliteral">&quot;Filesystem error: &quot;</span> &lt;&lt; fileName &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; e.what() &lt;&lt; endl;</div>
-<div class="line"><span class="lineno">   46</span>        }</div>
-<div class="line"><span class="lineno">   47</span>        <span class="keywordflow">catch</span> (<span class="keyword">const</span> exception &amp;e)</div>
-<div class="line"><span class="lineno">   48</span>        {</div>
-<div class="line"><span class="lineno">   49</span>            cerr &lt;&lt; <span class="stringliteral">&quot;Another error :( :&quot;</span> &lt;&lt; fileName &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; e.what() &lt;&lt; endl;</div>
-<div class="line"><span class="lineno">   50</span>        }</div>
-<div class="line"><span class="lineno">   51</span>    }</div>
-<div class="line"><span class="lineno">   52</span>    <span class="keywordflow">return</span> result;</div>
-<div class="line"><span class="lineno">   53</span>}</div>
-<div class="ttc" id="astructFile_html"><div class="ttname"><a href="structFile.html">File</a></div><div class="ttdoc">Структура модели файла в проекте</div><div class="ttdef"><b>Definition</b> fileSchema.h:15</div></div>
-<div class="ttc" id="astructFile_html_afd963fd6ba55fa762f7d3ab962e97e6c"><div class="ttname"><a href="structFile.html#afd963fd6ba55fa762f7d3ab962e97e6c">File::path</a></div><div class="ttdeci">string path</div><div class="ttdoc">Глобальный путь к файлу</div><div class="ttdef"><b>Definition</b> fileSchema.h:17</div></div>
-<div class="ttc" id="astructFile_html_afdbc9a614036edaee0ff8a7ee0f1b8d0"><div class="ttname"><a href="structFile.html#afdbc9a614036edaee0ff8a7ee0f1b8d0">File::name</a></div><div class="ttdeci">string name</div><div class="ttdoc">Имя файла</div><div class="ttdef"><b>Definition</b> fileSchema.h:16</div></div>
+<p>Фунция обхода директории </p>
+<div class="fragment"><div class="line"><span class="lineno">   73</span>{</div>
+<div class="line"><span class="lineno">   74</span>    vector&lt;FilePtr&gt; result;</div>
+<div class="line"><span class="lineno">   75</span> </div>
+<div class="line"><span class="lineno">   76</span>    vector&lt;filesystem::path&gt; subDirectories;</div>
+<div class="line"><span class="lineno">   77</span>    <span class="keywordflow">try</span></div>
+<div class="line"><span class="lineno">   78</span>    {</div>
+<div class="line"><span class="lineno">   79</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;dirEntry : directory_iterator(path, directory_options::skip_permission_denied))</div>
+<div class="line"><span class="lineno">   80</span>        {</div>
+<div class="line"><span class="lineno">   81</span>            <span class="keywordflow">if</span> (dirEntry.is_directory()) <span class="comment">// если директория, то добавляем в вектор с поддиректориями</span></div>
+<div class="line"><span class="lineno">   82</span>            {</div>
+<div class="line"><span class="lineno">   83</span>                subDirectories.push_back(dirEntry.path());</div>
+<div class="line"><span class="lineno">   84</span>            }</div>
+<div class="line"><span class="lineno">   85</span>            <span class="keywordflow">else</span> <span class="keywordflow">if</span> (dirEntry.is_regular_file()) <span class="comment">// если файл, то сразу добавляем в результирующий вектор</span></div>
+<div class="line"><span class="lineno">   86</span>            {</div>
+<div class="line"><span class="lineno">   87</span>                <span class="keyword">auto</span> file = <span class="keyword">new</span> <a class="code hl_struct" href="structFile.html">File</a>();</div>
+<div class="line"><span class="lineno">   88</span>                file-&gt;path = dirEntry.path().string();</div>
+<div class="line"><span class="lineno">   89</span>                file-&gt;name = dirEntry.path().filename().string();</div>
+<div class="line"><span class="lineno">   90</span>                result.push_back(file);</div>
+<div class="line"><span class="lineno">   91</span>                <span class="comment">//cout &lt;&lt; &quot;Top level of scan dir\n File&quot;+file-&gt;path+&quot; Current size of result: &quot; &lt;&lt; result.size() &lt;&lt; endl;</span></div>
+<div class="line"><span class="lineno">   92</span>            }</div>
+<div class="line"><span class="lineno">   93</span>        }</div>
+<div class="line"><span class="lineno">   94</span>    }</div>
+<div class="line"><span class="lineno">   95</span>    <span class="keywordflow">catch</span> (<span class="keyword">const</span> filesystem_error &amp;e)</div>
+<div class="line"><span class="lineno">   96</span>    {</div>
+<div class="line"><span class="lineno">   97</span>        cerr &lt;&lt; <span class="stringliteral">&quot;filesystem error: &quot;</span> &lt;&lt; path &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; e.what() &lt;&lt; endl;</div>
+<div class="line"><span class="lineno">   98</span>    }</div>
+<div class="line"><span class="lineno">   99</span> </div>
+<div class="line"><span class="lineno">  100</span>    <span class="comment">// Разделение поддиректорий на три части</span></div>
+<div class="line"><span class="lineno">  101</span>    <span class="keywordtype">size_t</span> numThreads = 3;</div>
+<div class="line"><span class="lineno">  102</span>    vector&lt;thread&gt; threads;</div>
+<div class="line"><span class="lineno">  103</span>    vector&lt;filesystem::path&gt; directories[numThreads];</div>
+<div class="line"><span class="lineno">  104</span> </div>
+<div class="line"><span class="lineno">  105</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; subDirectories.size(); ++i)</div>
+<div class="line"><span class="lineno">  106</span>    {</div>
+<div class="line"><span class="lineno">  107</span>        directories[i % numThreads].push_back(subDirectories[i]);</div>
+<div class="line"><span class="lineno">  108</span>    }</div>
+<div class="line"><span class="lineno">  109</span> </div>
+<div class="line"><span class="lineno">  110</span>    <span class="comment">// Запускаем потоки</span></div>
+<div class="line"><span class="lineno">  111</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; numThreads; ++i)</div>
+<div class="line"><span class="lineno">  112</span>    {</div>
+<div class="line"><span class="lineno">  113</span>        threads.emplace_back(processDirectories, ref(directories[i]), ref(result));</div>
+<div class="line"><span class="lineno">  114</span>    }</div>
+<div class="line"><span class="lineno">  115</span> </div>
+<div class="line"><span class="lineno">  116</span>    <span class="comment">// Ожидаем завершения потоков</span></div>
+<div class="line"><span class="lineno">  117</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;t : threads)</div>
+<div class="line"><span class="lineno">  118</span>    {</div>
+<div class="line"><span class="lineno">  119</span>        <span class="keywordflow">if</span> (t.joinable())</div>
+<div class="line"><span class="lineno">  120</span>        {</div>
+<div class="line"><span class="lineno">  121</span>            t.join();</div>
+<div class="line"><span class="lineno">  122</span>        }</div>
+<div class="line"><span class="lineno">  123</span>    }</div>
+<div class="line"><span class="lineno">  124</span> </div>
+<div class="line"><span class="lineno">  125</span>    <span class="keywordflow">return</span> result;</div>
+<div class="line"><span class="lineno">  126</span>}</div>
+<div class="ttc" id="astructFile_html"><div class="ttname"><a href="structFile.html">File</a></div><div class="ttdoc">Структура модели файла в проекте</div><div class="ttdef"><b>Definition</b> fileSchema.h:16</div></div>
 </div><!-- fragment -->
 </div>
 </div>

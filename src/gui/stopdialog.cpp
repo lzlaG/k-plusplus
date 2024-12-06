@@ -1,9 +1,11 @@
 #include "stopdialog.h"
 #include "ui_stopdialog.h"
 
-StopDialog::StopDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::StopDialog)
+/**
+ * Конструктор
+ */
+StopDialog::StopDialog(QWidget *parent) : QDialog(parent),
+                                          ui(new Ui::StopDialog)
 {
     ui->setupUi(this);
     this->setWindowTitle("Выберите способ продолжения анализа...");
@@ -16,9 +18,11 @@ StopDialog::StopDialog(QWidget *parent) :
     palette.setBrush(QPalette::Window, QBrush(pixmap));
     ui->frame->setPalette(palette);
     ui->frame->setAutoFillBackground(true);
-
 }
 
+/**
+ * Деконструктор
+ */
 StopDialog::~StopDialog()
 {
     delete ui;
@@ -30,10 +34,8 @@ void StopDialog::on_ContinueButton_clicked()
     accept();
 }
 
-
 void StopDialog::on_StartFromZeroButton_clicked()
 {
     emit WantStartFromZero();
     accept();
 }
-

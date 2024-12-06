@@ -3,10 +3,14 @@
 
 #include <QDialog>
 
-namespace Ui {
-class StopDialog;
+namespace Ui
+{
+    class StopDialog;
 }
 
+/**
+ * Класс диалогово окна
+ */
 class StopDialog : public QDialog
 {
     Q_OBJECT
@@ -26,6 +30,5 @@ signals:
     void WantJustContinue();
     void WantStartFromZero();
 };
-
 
 #endif // STOPDIALOG_H
