@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['getfilefromdir_0',['getFileFromDir',['../getFileFromDir_8h.html#a9ad05d07e2a83a3dcc004c3ef62ec293',1,'getFileFromDir.cpp']]]
+  ['fillthedb_0',['FillTheDB',['../classOutputDB.html#a904d79ede8dc577af73ee321343dad69',1,'OutputDB']]]
 ];

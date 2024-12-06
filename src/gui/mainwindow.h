@@ -8,10 +8,14 @@
 #include <QTreeView>
 #include "slave.h"
 
-namespace Ui {
-class MainWindow;
+namespace Ui
+{
+    class MainWindow;
 }
 
+/**
+ * Класс Основного окна
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -29,16 +33,18 @@ private slots:
     void BlockButtons();
     void UnblockButtons();
     void on_searchButton_clicked();
-    void handleModels(QStandardItemModel *model1, QStandardItemModel *model2);// Устанавливаем модель в QTreeView
+    void handleModels(QStandardItemModel *model1, QStandardItemModel *model2); // Устанавливаем модель в QTreeView
     void on_progressBar_valueChanged(int value);
     void on_stopButton_clicked();
     void ContinueAfterResume();
     void StartFromZeroAfterPause();
+
 private:
     Ui::MainWindow *ui;
     QStandardItemModel *originalKnownModel = new QStandardItemModel();
     QStandardItemModel *originalUnknownModel = new QStandardItemModel();
     bool IsPaused = false;
+
 protected:
     QString ScanDir;
     QString NsrlFile;

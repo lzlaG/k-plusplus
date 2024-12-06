@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.12.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>K-plusplus: src/main.cpp File Reference</title>
+<title>K-plusplus: src/gui/main.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -83,7 +83,7 @@ $(function(){ initResizable(false); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_99d0482cf009f9d97a0877749b817f19.html">gui</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div id="doc-content">
@@ -93,25 +93,19 @@ $(function(){ initResizable(false); });
   <div class="headertitle"><div class="title">main.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;iostream&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;<a class="el" href="nsrlRepository_8h_source.html">nsrlRepository/nsrlRepository.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="getFileFromDir_8h_source.html">getFileFromDir/getFileFromDir.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="outputDB_8h_source.html">OutputDB/outputDB.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="calculateShaHash_8h_source.html">calculateShaHash/calculateShaHash.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="fileSchema_8h_source.html">../models/fileSchema.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;mainwindow.h&quot;</code><br />
+<code>#include &lt;QApplication&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abf9e6b7e6f15df4b525a2e7705ba3089" id="r_abf9e6b7e6f15df4b525a2e7705ba3089"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf9e6b7e6f15df4b525a2e7705ba3089">main</a> (int argc, char const *argv[])</td></tr>
-<tr class="separator:abf9e6b7e6f15df4b525a2e7705ba3089"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ddf1224851353fc92bfbff6f499fa97" id="r_a0ddf1224851353fc92bfbff6f499fa97"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ddf1224851353fc92bfbff6f499fa97">main</a> (int argc, char *argv[])</td></tr>
+<tr class="separator:a0ddf1224851353fc92bfbff6f499fa97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Основной ход программы </p>
+<div class="textblock"><p>Инстализация приложения и запуск(gui версии) </p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="abf9e6b7e6f15df4b525a2e7705ba3089" name="abf9e6b7e6f15df4b525a2e7705ba3089"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf9e6b7e6f15df4b525a2e7705ba3089">&#9670;&#160;</a></span>main()</h2>
+<a id="a0ddf1224851353fc92bfbff6f499fa97" name="a0ddf1224851353fc92bfbff6f499fa97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ddf1224851353fc92bfbff6f499fa97">&#9670;&#160;</a></span>main()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -124,27 +118,25 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char const *</td>          <td class="paramname"><span class="paramname"><em>argv</em></span>[]&#160;)</td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>argv</em></span>[]&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<div class="fragment"><div class="line"><span class="lineno">   18</span>{</div>
-<div class="line"><span class="lineno">   19</span>    vector&lt;FilePtr&gt; filename = getFileFromDir(<span class="stringliteral">&quot;../tests&quot;</span>); <span class="comment">// Рекурсивный обход указанной директории</span></div>
-<div class="line"><span class="lineno">   20</span>    <a class="code hl_class" href="classNSRLRepository.html">NSRLRepository</a> nsrlRepo = <a class="code hl_class" href="classNSRLRepository.html">NSRLRepository</a>(<span class="stringliteral">&quot;../src/nsrlRepository/test.db&quot;</span>); <span class="comment">// Инициализация NSRL репозитория</span></div>
-<div class="line"><span class="lineno">   21</span>    <a class="code hl_class" href="classOutputDB.html">OutputDB</a> ourDatabase; <span class="comment">// Создание выходных баз данных</span></div>
-<div class="line"><span class="lineno">   22</span> </div>
-<div class="line"><span class="lineno">   23</span>    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; filename.size(); i++)</div>
-<div class="line"><span class="lineno">   24</span>    {</div>
-<div class="line"><span class="lineno">   25</span>        CalculateSHA1Hash(filename[i]); <span class="comment">// Подсчет хеша</span></div>
-<div class="line"><span class="lineno">   26</span>        nsrlRepo.<a class="code hl_function" href="classNSRLRepository.html#a402ed310502b379a0b2efabcc4e5ca1a">IsHashInDB</a>(filename[i]); <span class="comment">// Анализ контрольной суммы файла </span></div>
-<div class="line"><span class="lineno">   27</span>        ourDatabase.<a class="code hl_function" href="classOutputDB.html#a904d79ede8dc577af73ee321343dad69">FillTheDB</a>(filename[i]); <span class="comment">// Заполнение баз данных</span></div>
-<div class="line"><span class="lineno">   28</span>    }</div>
-<div class="line"><span class="lineno">   29</span>    filename.clear();</div>
-<div class="line"><span class="lineno">   30</span>}</div>
-<div class="ttc" id="aclassNSRLRepository_html"><div class="ttname"><a href="classNSRLRepository.html">NSRLRepository</a></div><div class="ttdef"><b>Definition</b> nsrlRepository.h:15</div></div>
-<div class="ttc" id="aclassNSRLRepository_html_a402ed310502b379a0b2efabcc4e5ca1a"><div class="ttname"><a href="classNSRLRepository.html#a402ed310502b379a0b2efabcc4e5ca1a">NSRLRepository::IsHashInDB</a></div><div class="ttdeci">void IsHashInDB(FilePtr file)</div><div class="ttdef"><b>Definition</b> nsrlRepository.cpp:30</div></div>
-<div class="ttc" id="aclassOutputDB_html"><div class="ttname"><a href="classOutputDB.html">OutputDB</a></div><div class="ttdef"><b>Definition</b> outputDB.h:18</div></div>
-<div class="ttc" id="aclassOutputDB_html_a904d79ede8dc577af73ee321343dad69"><div class="ttname"><a href="classOutputDB.html#a904d79ede8dc577af73ee321343dad69">OutputDB::FillTheDB</a></div><div class="ttdeci">void FillTheDB(FilePtr ourfile)</div><div class="ttdef"><b>Definition</b> outputDB.cpp:10</div></div>
+<p>Инстализация приложения и запуск </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">argc</td><td>количество параметров ком. строки </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">argv</td><td>параметры ком. строки </td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="fragment"><div class="line"><span class="lineno">   15</span>{</div>
+<div class="line"><span class="lineno">   16</span>    srand(time(0));</div>
+<div class="line"><span class="lineno">   17</span>    QApplication a(argc, argv);</div>
+<div class="line"><span class="lineno">   18</span>    <a class="code hl_class" href="classMainWindow.html">MainWindow</a> w;</div>
+<div class="line"><span class="lineno">   19</span>    w.show();</div>
+<div class="line"><span class="lineno">   20</span>    <span class="keywordflow">return</span> a.exec();</div>
+<div class="line"><span class="lineno">   21</span>}</div>
+<div class="ttc" id="aclassMainWindow_html"><div class="ttname"><a href="classMainWindow.html">MainWindow</a></div><div class="ttdef"><b>Definition</b> mainwindow.h:20</div></div>
 </div><!-- fragment -->
 </div>
 </div>
