@@ -20,7 +20,16 @@ void CalculateSHA1Hash(FilePtr file)
 
     try
     {
-        FileSource fileSource(file->path.c_str(), true,
+        ifstream inputFile(file->path, ios::binary);
+
+        // if (!inputFile) {
+
+        //     throw runtime_error("Unable to open file: " + file->path);
+
+        // }
+        // else {cerr << file->path <<endl;}
+
+        FileSource fileSource(inputFile, true,
                               new HashFilter(sha1,
                                              new HexEncoder(
                                                  new StringSink(hash))));
