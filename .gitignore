@@ -4,3 +4,7 @@ lib/cryptopp/libcryptopp.a
 src/OutputDB/1
 tests/output.db
 tmp
+doc
+.vscode
+CMakeLists.txt.user
+src/OurTabs.h

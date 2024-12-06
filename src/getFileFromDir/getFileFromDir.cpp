@@ -2,48 +2,125 @@
 #include <iostream>
 #include <filesystem>
 #include <vector>
-#include <fstream>
+#include <thread>
+#include <mutex>
+#include "../../models/fileSchema.h"
+#include "getFileFromDir.h"
 
 using namespace std;
 using namespace filesystem;
 
-#include "../../models/fileSchema.h"
-#include "getFileFromDir.h"
+mutex resultMutex; // Мьютекс для синхронизации доступа к result
 
-vector<FilePtr> getFileFromDir(string path)
+/**
+ * @param [in] path Путь к анализируемой директории
+ * @param [out] result Заполнены вектор со считанными именами и путями в собственных структурах для каждого файла
+ */
+void getFilesFromDirRecursive(const filesystem::path &path, vector<FilePtr> &result)
 {
-    vector<FilePtr> result;
-    for (const auto &dirEntry : recursive_directory_iterator(path))
+    try
     {
-        filesystem::path filePath = dirEntry.path();
-        filesystem::path fileName = dirEntry.path().filename();
-
-        try
+        for (const auto &dirEntry : directory_iterator(path, directory_options::skip_permission_denied))
         {
-            if (!is_directory(dirEntry) && exists(dirEntry))
+            try
             {
-                ifstream IsFileOpen(filePath);
+                if (dirEntry.is_symlink())
+                    continue; // Игнорируем символические ссылки
 
-                if (!IsFileOpen.is_open())
+                const auto filename = dirEntry.path().filename();
+                if (filename == "System Volume Information" || filename == "$Recycle.Bin")
+                    continue; // Игнорируем системные папки
+
+                if (dirEntry.is_regular_file())
                 {
-                    cerr << "Can't open the file (permisson denied): " << filePath << endl;
-                    continue;
-                }
+                    auto file = new File();
+                    file->path = dirEntry.path().string();
+                    file->name = dirEntry.path().filename().string();
 
-                FilePtr file = new File();
-                file->path = filePath.string();
-                file->name = fileName.string();
-                result.push_back(file);
+                    // Защита добавления в result с помощью мьютекса
+                    lock_guard<mutex> lock(resultMutex);
+                    result.push_back(file);
+                    //cout << "Reading file in sub directory\n File:"+file->path+" Current size of result: " << result.size() << endl;
+                }
+                else if (dirEntry.is_directory())
+                {
+                    // Рекурсивно обходим вложенные директории
+                    getFilesFromDirRecursive(dirEntry.path(), result);
+                }
+            }
+            catch (const filesystem_error &e)
+            {
+                cerr << "Filesystem error: " << e.what() << " at path: "
+                     << (e.path1().empty() ? "(unknown)" : e.path1().string()) << endl;
             }
         }
-        catch (const filesystem_error &e)
+    }
+    catch (const filesystem_error &e)
+    {
+        cerr << "filesystem error(directory): " << path << ": " << e.what() << endl;
+    }
+}
+
+void processDirectories(const vector<path> &paths, vector<FilePtr> &result)
+{
+    for (const auto &subPath : paths)
+    {
+        getFilesFromDirRecursive(subPath, result);
+    }
+}
+
+vector<FilePtr> getFileFromDir(filesystem::path path)
+{
+    vector<FilePtr> result;
+
+    vector<filesystem::path> subDirectories;
+    try
+    {
+        for (const auto &dirEntry : directory_iterator(path, directory_options::skip_permission_denied))
         {
-            cerr << "Filesystem error: " << fileName << ": " << e.what() << endl;
-        }
-        catch (const exception &e)
-        {
-            cerr << "Another error :( :" << fileName << ": " << e.what() << endl;
+            if (dirEntry.is_directory()) // если директория, то добавляем в вектор с поддиректориями
+            {
+                subDirectories.push_back(dirEntry.path());
+            }
+            else if (dirEntry.is_regular_file()) // если файл, то сразу добавляем в результирующий вектор
+            {
+                auto file = new File();
+                file->path = dirEntry.path().string();
+                file->name = dirEntry.path().filename().string();
+                result.push_back(file);
+                //cout << "Top level of scan dir\n File"+file->path+" Current size of result: " << result.size() << endl;
+            }
         }
     }
+    catch (const filesystem_error &e)
+    {
+        cerr << "filesystem error: " << path << ": " << e.what() << endl;
+    }
+
+    // Разделение поддиректорий на три части
+    size_t numThreads = 3;
+    vector<thread> threads;
+    vector<filesystem::path> directories[numThreads];
+
+    for (size_t i = 0; i < subDirectories.size(); ++i)
+    {
+        directories[i % numThreads].push_back(subDirectories[i]);
+    }
+
+    // Запускаем потоки
+    for (size_t i = 0; i < numThreads; ++i)
+    {
+        threads.emplace_back(processDirectories, ref(directories[i]), ref(result));
+    }
+
+    // Ожидаем завершения потоков
+    for (auto &t : threads)
+    {
+        if (t.joinable())
+        {
+            t.join();
+        }
+    }
+
     return result;
 }

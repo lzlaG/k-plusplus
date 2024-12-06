@@ -18,15 +18,27 @@ void CalculateSHA1Hash(FilePtr file)
     SHA1 sha1;
     string hash;
 
-    FileSource fileSource(file->path.c_str(), true,
-                          new HashFilter(sha1,
-                                         new HexEncoder(
-                                             new StringSink(hash), false)));
-
-    for (auto &x : hash)
+    try
     {
-        x = toupper(x);
-    }
+        ifstream inputFile(file->path, ios::binary);
 
-    file->hash_sha1 = hash;
+        // if (!inputFile) {
+
+        //     throw runtime_error("Unable to open file: " + file->path);
+
+        // }
+        // else {cerr << file->path <<endl;}
+
+        FileSource fileSource(inputFile, true,
+                              new HashFilter(sha1,
+                                             new HexEncoder(
+                                                 new StringSink(hash))));
+        file->hash_sha1 = hash;
+        //cout << "Hash of  "+file->path+": " << hash << endl;
+    }
+    catch (const exception &e)
+    {
+        cerr << "Another error :( :" << ": " << e.what() << endl;
+        file->hash_sha1 = "";
+    }
 }
