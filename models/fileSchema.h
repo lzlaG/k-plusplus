@@ -5,6 +5,7 @@
 #ifndef FILESCHEMA_H_INCLUDED
 #define FILESCHEMA_H_INCLUDED
 #include <string>
+#include <filesystem>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ using namespace std;
 struct File
 {
     string name; ///< Имя файла
-    string path; ///< Глобальный путь к файлу
+    filesystem::path path; ///< Глобальный путь к файлу
     string hash_sha1; ///< Контрольная сумма, вычисленная чрез алгоритм sha1
     string hash_sha256; ///< Контрольная сумма, вычисленная чрез алгоритм sha256
     string hash_md5; ///< Контрольная сумма, вычисленная чрез алгоритм md5
