@@ -96,12 +96,13 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#define DIR</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="fileSchema_8h.html">../../models/fileSchema.h</a>&quot;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">using namespace </span>std;</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>vector&lt;FilePtr&gt; <a class="code hl_function" href="getFileFromDir_8h.html#a9ad05d07e2a83a3dcc004c3ef62ec293">getFileFromDir</a>(<span class="keywordtype">string</span> path);</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#endif </span><span class="comment">// DIR</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">using namespace </span>std;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>vector&lt;FilePtr&gt; <a class="code hl_function" href="getFileFromDir_8h.html#a7e21ea62f8786ebc46682fc1c0bc6227">getFileFromDir</a>(filesystem::path path);</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#endif </span><span class="comment">// DIR</span></div>
 <div class="ttc" id="afileSchema_8h_html"><div class="ttname"><a href="fileSchema_8h.html">fileSchema.h</a></div><div class="ttdoc">Модуль, содержащий описание модели файла в проекте</div></div>
-<div class="ttc" id="agetFileFromDir_8h_html_a9ad05d07e2a83a3dcc004c3ef62ec293"><div class="ttname"><a href="getFileFromDir_8h.html#a9ad05d07e2a83a3dcc004c3ef62ec293">getFileFromDir</a></div><div class="ttdeci">vector&lt; FilePtr &gt; getFileFromDir(string path)</div><div class="ttdef"><b>Definition</b> getFileFromDir.cpp:17</div></div>
+<div class="ttc" id="agetFileFromDir_8h_html_a7e21ea62f8786ebc46682fc1c0bc6227"><div class="ttname"><a href="getFileFromDir_8h.html#a7e21ea62f8786ebc46682fc1c0bc6227">getFileFromDir</a></div><div class="ttdeci">vector&lt; FilePtr &gt; getFileFromDir(filesystem::path path)</div><div class="ttdef"><b>Definition</b> getFileFromDir.cpp:72</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -132,20 +132,32 @@ Functions</h2></td></tr>
 <div class="line"><span class="lineno">   18</span>    SHA1 sha1;</div>
 <div class="line"><span class="lineno">   19</span>    <span class="keywordtype">string</span> hash;</div>
 <div class="line"><span class="lineno">   20</span> </div>
-<div class="line"><span class="lineno">   21</span>    FileSource fileSource(file-&gt;<a class="code hl_variable" href="structFile.html#afd963fd6ba55fa762f7d3ab962e97e6c">path</a>.c_str(), <span class="keyword">true</span>,</div>
-<div class="line"><span class="lineno">   22</span>                          <span class="keyword">new</span> HashFilter(sha1,</div>
-<div class="line"><span class="lineno">   23</span>                                         <span class="keyword">new</span> HexEncoder(</div>
-<div class="line"><span class="lineno">   24</span>                                             <span class="keyword">new</span> StringSink(hash), <span class="keyword">false</span>)));</div>
-<div class="line"><span class="lineno">   25</span> </div>
-<div class="line"><span class="lineno">   26</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp;x : hash)</div>
-<div class="line"><span class="lineno">   27</span>    {</div>
-<div class="line"><span class="lineno">   28</span>        x = toupper(x);</div>
-<div class="line"><span class="lineno">   29</span>    }</div>
-<div class="line"><span class="lineno">   30</span> </div>
-<div class="line"><span class="lineno">   31</span>    file-&gt;<a class="code hl_variable" href="structFile.html#a77a765f186254398071b306d289884b9">hash_sha1</a> = hash;</div>
-<div class="line"><span class="lineno">   32</span>}</div>
-<div class="ttc" id="astructFile_html_a77a765f186254398071b306d289884b9"><div class="ttname"><a href="structFile.html#a77a765f186254398071b306d289884b9">File::hash_sha1</a></div><div class="ttdeci">string hash_sha1</div><div class="ttdoc">Контрольная сумма, вычисленная чрез алгоритм sha1.</div><div class="ttdef"><b>Definition</b> fileSchema.h:18</div></div>
-<div class="ttc" id="astructFile_html_afd963fd6ba55fa762f7d3ab962e97e6c"><div class="ttname"><a href="structFile.html#afd963fd6ba55fa762f7d3ab962e97e6c">File::path</a></div><div class="ttdeci">string path</div><div class="ttdoc">Глобальный путь к файлу</div><div class="ttdef"><b>Definition</b> fileSchema.h:17</div></div>
+<div class="line"><span class="lineno">   21</span>    <span class="keywordflow">try</span></div>
+<div class="line"><span class="lineno">   22</span>    {</div>
+<div class="line"><span class="lineno">   23</span>        ifstream inputFile(file-&gt;<a class="code hl_variable" href="structFile.html#a99d0d01d31725ea73071b145e6ff14fd">path</a>, ios::binary);</div>
+<div class="line"><span class="lineno">   24</span> </div>
+<div class="line"><span class="lineno">   25</span>        <span class="comment">// if (!inputFile) {</span></div>
+<div class="line"><span class="lineno">   26</span> </div>
+<div class="line"><span class="lineno">   27</span>        <span class="comment">//     throw runtime_error(&quot;Unable to open file: &quot; + file-&gt;path);</span></div>
+<div class="line"><span class="lineno">   28</span> </div>
+<div class="line"><span class="lineno">   29</span>        <span class="comment">// }</span></div>
+<div class="line"><span class="lineno">   30</span>        <span class="comment">// else {cerr &lt;&lt; file-&gt;path &lt;&lt;endl;}</span></div>
+<div class="line"><span class="lineno">   31</span> </div>
+<div class="line"><span class="lineno">   32</span>        FileSource fileSource(inputFile, <span class="keyword">true</span>,</div>
+<div class="line"><span class="lineno">   33</span>                              <span class="keyword">new</span> HashFilter(sha1,</div>
+<div class="line"><span class="lineno">   34</span>                                             <span class="keyword">new</span> HexEncoder(</div>
+<div class="line"><span class="lineno">   35</span>                                                 <span class="keyword">new</span> StringSink(hash))));</div>
+<div class="line"><span class="lineno">   36</span>        file-&gt;<a class="code hl_variable" href="structFile.html#a77a765f186254398071b306d289884b9">hash_sha1</a> = hash;</div>
+<div class="line"><span class="lineno">   37</span>        <span class="comment">//cout &lt;&lt; &quot;Hash of  &quot;+file-&gt;path+&quot;: &quot; &lt;&lt; hash &lt;&lt; endl;</span></div>
+<div class="line"><span class="lineno">   38</span>    }</div>
+<div class="line"><span class="lineno">   39</span>    <span class="keywordflow">catch</span> (<span class="keyword">const</span> exception &amp;e)</div>
+<div class="line"><span class="lineno">   40</span>    {</div>
+<div class="line"><span class="lineno">   41</span>        cerr &lt;&lt; <span class="stringliteral">&quot;Another error :( :&quot;</span> &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; e.what() &lt;&lt; endl;</div>
+<div class="line"><span class="lineno">   42</span>        file-&gt;<a class="code hl_variable" href="structFile.html#a77a765f186254398071b306d289884b9">hash_sha1</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><span class="lineno">   43</span>    }</div>
+<div class="line"><span class="lineno">   44</span>}</div>
+<div class="ttc" id="astructFile_html_a77a765f186254398071b306d289884b9"><div class="ttname"><a href="structFile.html#a77a765f186254398071b306d289884b9">File::hash_sha1</a></div><div class="ttdeci">string hash_sha1</div><div class="ttdoc">Контрольная сумма, вычисленная чрез алгоритм sha1.</div><div class="ttdef"><b>Definition</b> fileSchema.h:19</div></div>
+<div class="ttc" id="astructFile_html_a99d0d01d31725ea73071b145e6ff14fd"><div class="ttname"><a href="structFile.html#a99d0d01d31725ea73071b145e6ff14fd">File::path</a></div><div class="ttdeci">filesystem::path path</div><div class="ttdoc">Глобальный путь к файлу</div><div class="ttdef"><b>Definition</b> fileSchema.h:18</div></div>
 </div><!-- fragment -->
 </div>
 </div>

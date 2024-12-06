@@ -128,13 +128,16 @@ $(function(){ initResizable(false); });
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Установка зависимостей перед сборкой проекта</h1>
-<p><b>Для сборки данного репозитория необходимы несколько зависимостей (установите их сами, в зависимости от вашего дистрибутива):</b></p><ul>
+<p><b>Для сборки данного репозитория необходимы несколько зависимостей (установите их сами, в зависимости от вашего дистрибутива):</b></p>
+<ul>
 <li>gcc/g++ - Компилторы для сборки на Linux и MacOS (Присутствуют в системах изначально)</li>
 <li>CMake &gt;=3.21 - Программа для создания Makefile и последующей сборки под вашу платформу</li>
 <li>Make - сборка итогового приложения</li>
 <li>MingGW - Программа для установки компилтора (Windows)</li>
+<li>Библиотека Boost(Для LInux можно установить не весь boost, у только компонент libboost-program-options со всеми зависямостями этого комопнента. Для установки воспользуйтесь инструкциями для своего дистрибутива)</li>
 </ul>
-<p><b>Примечания</b>:</p><ul>
+<p><b>Примечания</b>:</p>
+<ul>
 <li>gcc/g++ является опциональной зависимостью для Windows (для остальных платформ обязательно)</li>
 <li>MinGW - опиональная зависимость для Linux и MacOS(необходимо только для кросс-компиляции)</li>
 <li>Для Linux все зависмости устанавливаются в зависмости от вашего дистрибутива</li>
@@ -175,8 +178,17 @@ $(function(){ initResizable(false); });
 </ol>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Кросс-компиляция (Из Linux под другие ОС)</h2>
-<p>Выполните те же шаги, что и для обчный компиляции, но вместо команды "cmake .." Выполните: cmake .. -DCMAKE_TOOLCHAIN_FILE=./toolchains/windows.txt (Для windows) Чтобы выполнить кросс-компиляции под MacOS выполните: </p><div class="fragment"><div class="line">cmake .. -DCMAKE_TOOLCHAIN_FILE=./toolchains/macos.txt</div>
-</div><!-- fragment --><p> Таким образом сможете получить бинарные файлы под другие платформы(возможно работает на MacOS) </p>
+<p>Выполните те же шаги, что и для обчный компиляции, но вместо команды "cmake .." Выполните: cmake .. -DCMAKE_TOOLCHAIN_FILE=./toolchains/windows.txt (Для windows) Чтобы выполнить кросс-компиляции под MacOS выполните:</p>
+<div class="fragment"><div class="line">cmake .. -DCMAKE_TOOLCHAIN_FILE=./toolchains/macos.txt</div>
+</div><!-- fragment --><p>Таким образом сможете получить бинарные файлы под другие платформы(возможно работает на MacOS)</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+Отладка приложения</h1>
+<ol type="1">
+<li>Установить расширения для VSCode <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools">Расширение C++ для VS Code</a> <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools">Расширение CMake Tools для VS Code</a></li>
+<li>Проверить установку make, cmake, gcc, gdb</li>
+<li>Поставить точку для отладки</li>
+<li>Запустить через кнопку внизу <img src="./doc/run_debug_btn.png" alt="run Debug" class="inline"/> </li>
+</ol>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

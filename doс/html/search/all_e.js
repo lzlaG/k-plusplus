@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['из_20linux_20под_20другие_20ос_0',['Кросс-компиляция (Из Linux под другие ОС)',['../md_README.html#autotoc_md7',1,'']]]
+  ['windows_0',['Сборка под Windows',['../md_README.html#autotoc_md6',1,'']]]
 ];
