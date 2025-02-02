@@ -4,7 +4,7 @@
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
 
-set (BOOST_ROOT "C:/boost/boost-x64")
+set (BOOST_ROOT "C:/boost/")
 set (CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "C:/boost/boost-x64")
 set (CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/boost/boost-x64/lib")
 set (CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "Z:/Qt6.8.0/Qt/6.8.0/mingw_64")
