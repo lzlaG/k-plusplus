@@ -1,0 +1,52 @@
+name: build and run tests
+
+on:
+  push:
+   branches: [ cicd ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download Boost
+        shell: powershell
+        run: |
+          $uri = 'https://dl.bintray.com/boostorg/release/1.86.0/source/boost_1_86_0.zip'
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          Invoke-WebRequest -Uri $uri -OutFile C:\boost.zip -UserAgent [Microsoft.PowerShell.Commands.PSUserAgent]::Chrome
+      - name: Unzip boost
+        run: Expand-Archive -LiteralPath 'C:\boost.zip' -DestinationPath C:\install\
+      - name: Run bootstrap
+        shell: powershell
+        run: |
+          cd C:\install\boost_1_86_0\tools\build\
+          .\bootstrap.bat gcc
+      - name: Install Boost
+        continue-on-error: true
+        shell: powershell
+        run: |
+          cd C:\install\boost_1_86_0\tools\build\
+          .\b2 --with-system --with-program_options --with-serialization --with-test --build-type=complete -j2 --prefix="C:\boost-build" toolset=gcc install
+          $env:Path += ";C:\boost-build\bin"
+          cd C:\install\boost_1_86_0
+          C:\boost-build\bin\b2.exe --with-system --with-program_options --with-serialization --with-test --build-type=complete -j2 --build-dir="C:\install\boost_1_86_0\build" --build-type=complete --prefix="C:\boost" toolset=gcc install
+      - name: Check libs names
+        if: success() || failure()
+        run: |
+          cd c:\boost\lib
+          Get-ChildItem
+      - name: Running cmake
+        if: success() || failure()
+        run: |
+          $env:BOOST_INCLUDEDIR = 'C:\boost\include'
+          $env:BOOST_LIBRARYDIR = 'C:\boost\lib'
+          $env:BOOST_ROOT = 'C:\boost'
+          mkdir build
+          cd build
+          cmake -DBOOST_ROOT=c:/boost -DBoost_DEBUG=ON -G "MinGW Makefiles" ..
+      - name: Running make (MinGW Makefiles)
+        if: success() || failure()
+        run: |
+          cd build
+          make
