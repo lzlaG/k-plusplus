@@ -125,6 +125,7 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	set_target_properties(k-pp-gui PROPERTIES WIN32_EXECUTABLE ON)
+    target_link_options(k-pp-gui PRIVATE "-Wl,-entry:mainCRTStartup")
 endif()
 
 #отправляем в нужную директорию
