@@ -3,7 +3,6 @@ name: build and run tests
 on:
   push:
    branches: [ cicd ]
-
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -45,4 +44,23 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: KPP-win-portable
+          path: build/bin/
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo 
+        uses: actions/checkout@v4
+      - name: install deps
+        run: apt install -y libboost-dev build-essential cmake gcc qt6-base-dev
+      - name: Prepare for building
+        run: |
+          mkdir build
+          cd build
+          cmake ..  
+      - name: Running make
+        run: make
+      - name: upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: KPP-linux-portable
           path: build/bin/
