@@ -19,6 +19,7 @@ jobs:
          link: static
          platform_version: 2022
          toolset: mingw
+         cache: false
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
