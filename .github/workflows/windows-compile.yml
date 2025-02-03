@@ -17,11 +17,8 @@ jobs:
          link: static
          platform_version: 2022
          toolset: mingw
-      - name: Check libs names
-        if: success() || failure()
-        run: |
-          cd c:\boost\lib
-          Get-ChildItem
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
       - name: Running cmake
         if: success() || failure()
         run: |
