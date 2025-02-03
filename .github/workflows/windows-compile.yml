@@ -19,7 +19,6 @@ jobs:
          link: static
          platform_version: 2022
          toolset: mingw
-         tools: 'tools_mingw90'
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
