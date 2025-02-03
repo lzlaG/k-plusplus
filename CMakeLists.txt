@@ -21,6 +21,7 @@ set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
 
 
 if (WIN32)
+    message(STATUS "Compiling for Windows")
     set(CMAKE_C_FLAGS_INIT "-static-libgcc -static-libstdc++")
     set(CMAKE_CXX_FLAGS_INIT "-static-libgcc -static-libstdc++")
     set(Boost_NO_SYSTEM_PATHS TRUE)
@@ -36,9 +37,7 @@ if (WIN32)
     set(Boost_ARCHITECTURE "-x64")
 endif (WIN32)
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    message(STATUS "Compiling for Windows")
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     message(STATUS "Compiling for Linux")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Compiling for MacOS")
