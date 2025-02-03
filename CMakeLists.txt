@@ -89,7 +89,7 @@ set(CLI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/cli)
 set(GUI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/gui)
 
 #сборка всего приложения(cli версия)
-add_executable(k-pp-cli ${SOURCE_DIR}/cli/cli_main.cpp)
+add_executable(k-pp-cli ${SOURCE_DIR}/cli/cli_version.cpp)
 target_link_libraries(k-pp-cli application)
 set_target_properties(k-pp-cli PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CLI_OUTPUT_DIR})
 
