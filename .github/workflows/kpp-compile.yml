@@ -51,7 +51,7 @@ jobs:
       - name: Clone repo 
         uses: actions/checkout@v4
       - name: install deps
-        run: apt install -y libboost-dev build-essential cmake gcc qt6-base-dev
+        run: sudo apt install -y libboost-dev build-essential cmake gcc qt6-base-dev
       - name: Prepare for building
         run: |
           mkdir build
