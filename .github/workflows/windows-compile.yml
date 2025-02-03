@@ -23,9 +23,8 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.8.0'
+          version: '6.7.0'
           arch: 'win64_mingw'
-          tools: 'tools_mingw90'
       - name: Running cmake
         run: |
           mkdir build
