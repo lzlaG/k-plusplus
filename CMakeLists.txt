@@ -90,7 +90,13 @@ set(GUI_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/build/bin/gui)
 
 #сборка всего приложения(cli версия)
 add_executable(k-pp-cli ${SOURCE_DIR}/cli/cli_version.cpp)
-target_link_libraries(k-pp-cli application)
+
+if(MINGW)
+    target_link_libraries(k-pp-cli application -static-libgcc -static-libstdc++)
+else()
+    target_link_libraries(k-pp-cli application)
+endif()
+
 set_target_properties(k-pp-cli PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CLI_OUTPUT_DIR})
 
 #ищем qt
@@ -117,7 +123,13 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
     )
 endif()
-target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
+
+if(MINGW)
+    target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options -static-libgcc -static-libstdc++)
+else()
+    target_link_libraries(k-pp-gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets calculateShaHash getFileFromDir nsrlRepository OutputDB Boost::program_options)
+endif()
+
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(k-pp-gui)
 endif()
