@@ -53,7 +53,7 @@ jobs:
       - name: install deps
         run: | 
           sudo apt update
-          sudo apt install -y libboost-dev build-essential cmake gcc qt6-base-dev
+          sudo apt install -y libboost-all-dev build-essential cmake gcc qt6-base-dev
       - name: Prepare for building
         run: |
           mkdir build
