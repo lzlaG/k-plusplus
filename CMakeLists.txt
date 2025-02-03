@@ -123,9 +123,8 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(k-pp-gui)
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+if(WIN32)
 	set_target_properties(k-pp-gui PROPERTIES WIN32_EXECUTABLE ON)
-    target_link_options(k-pp-gui PRIVATE "-Wl,-entry:mainCRTStartup")
 endif()
 
 #отправляем в нужную директорию
