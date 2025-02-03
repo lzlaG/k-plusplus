@@ -8,6 +8,8 @@ jobs:
   build-windows:
     runs-on: windows-latest
     steps:
+      - name: install Ninja
+        run: choco install ninja
       - uses: actions/checkout@v3
       - name: Install boost
         uses: MarkusJx/install-boost@v2
@@ -34,4 +36,4 @@ jobs:
         if: success() || failure()
         run: |
           cd build
-          make
+          ninja
