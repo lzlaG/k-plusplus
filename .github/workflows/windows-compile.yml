@@ -30,8 +30,17 @@ jobs:
           cmake -G "MinGW Makefiles" ..
         env:
           BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
-      - name: Running ninja
+      - name: Running make
         if: success() || failure()
         run: |
           cd build
           make
+      - name: Run windeployqt
+        run: |
+          $qtPath = (Get-Command windeployqt).Path
+          & $qtPath --release build/bin/gui/k-pp-gui.exe
+      - name: upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: KPP
+          path: build/
