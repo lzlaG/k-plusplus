@@ -21,7 +21,8 @@ set(LIB_DIR ${CMAKE_SOURCE_DIR}/lib)
 
 
 if (WIN32)
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+    set(CMAKE_C_FLAGS_INIT "-static-libgcc -static-libstdc++")
+    set(CMAKE_CXX_FLAGS_INIT "-static-libgcc -static-libstdc++")
     set(Boost_NO_SYSTEM_PATHS TRUE)
     if (Boost_NO_SYSTEM_PATHS)
       set(BOOST_ROOT "${BOOST_ROOT}")
